@@ -1,0 +1,3 @@
+exports.Class = {
+    "name": "anotherClass"
+};
