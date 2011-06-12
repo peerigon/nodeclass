@@ -5,7 +5,7 @@
   "homepage": "http://github.com/jhnns/node.class",
   "repository": "git://github.com/jhnns/node.class.git",
   "author": "Johannes Ewald <johannes.ewald@gmx.de>",
-  "main": "./lib/main.js",
+  "main": "./lib/index.js",
   "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
   "dependencies": {
       "toSrc": "0.1.x",
