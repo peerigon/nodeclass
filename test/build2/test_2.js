@@ -1,19 +1,12 @@
 var assert = require('assert'),
-    build = require('../../lib/build'),
+    fs = require('fs'),
     _ = require('underscore'),
     vm = require('vm'),
     src,
-    sandbox = {
-        "exports": null,
-        "console": console
-    },
-    ClassModule = require('node.class/test/build/Class.class'),
     Class,
     testClass,
-    SuperClassModule = require('node.class/test/build/SuperClass.class'),
     SuperClass,
     testSuperClass,
-    SuperSuperClassModule = require('node.class/test/build/SuperSuperClass.class'),
     SuperSuperClass,
     testSuperSuperClass;
 
@@ -21,33 +14,58 @@ function log(txt) {
     console.log(txt.replace(/([\{\}\;])/gi, "$1\n"));
 }
 
+function loadSrc(className) {
+    var src = fs.readFileSync(__dirname + '/src/node_modules/' + className + '.js', 'utf8');
+    var classModule = {
+        "require": function(path) {
+            if(path !== 'assert') {
+                return loadSrc(path);
+            } else {
+                return require(path);
+            }
+        },
+        console: console
+    }
+    
+    vm.runInNewContext(src, classModule);
+    
+    return classModule;
+}
+
+function build(className) {
+    var buildModule = require('../../lib/build2');
+    var src = fs.readFileSync(__dirname + '/src/node_modules/' + className + '.js', 'utf8');
+    var classModule = loadSrc(className);
+    
+    src = src + '\n' + buildModule(className, classModule);
+    
+    fs.writeFileSync(__dirname + '/compiled/node_modules/' + className + '.js', src);
+}
+
+function load(className) {
+    return require(__dirname + '/compiled/node_modules/' + className + '.js');
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
-sandbox.exports = ClassModule;
-src = build('node.class/test/build/Class.class');
-vm.runInNewContext(src, sandbox);
-Class = ClassModule.Constructor;
+build('Class.class');
+build('SuperClass.class');
+build('SuperSuperClass.class');
 
-sandbox.exports = SuperClassModule;
-src = build('node.class/test/build/SuperClass.class');
-vm.runInNewContext(src, sandbox);
+Class = load('Class.class');
+SuperClass = load('SuperClass.class');
+SuperSuperClass = load('SuperSuperClass.class');
 
-sandbox.exports = SuperSuperClassModule;
-src = build('node.class/test/build/SuperSuperClass.class');
-vm.runInNewContext(src, sandbox);
 
-ClassModule.InitConstructor();
-assert.ok(ClassModule.InitContructor === undefined);
+Class.$init();
+assert.ok(Class.$init === undefined);
 
-Class = ClassModule.Constructor;
-SuperClass = SuperClassModule.Constructor;
-SuperSuperClass = SuperSuperClassModule.Constructor;
 testClass = new Class("argument 1", "argument 2");
 
 testClass.assertProperties();
-assert.notEqual(testClass.getIsClassInit(), ClassModule.Class.isClassInit);
-assert.notEqual(testClass.getIsSuperClassInit(), SuperClassModule.Class.isSuperClassInit);
-assert.notEqual(testClass.getIsSuperSuperClassInit(), SuperSuperClassModule.Class.isSuperSuperClassInit);
+assert.notEqual(testClass.getIsClassInit(), Class.isClassInit);
+assert.notEqual(testClass.getIsSuperClassInit(), Class.isSuperClassInit);
+assert.notEqual(testClass.getIsSuperSuperClassInit(), Class.isSuperSuperClassInit);
 assert.equal(testClass.getIsClassInit(), true);
 assert.equal(testClass.getIsSuperClassInit(), true);
 assert.equal(testClass.getIsSuperSuperClassInit(), true);
