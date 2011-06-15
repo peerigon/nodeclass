@@ -1,84 +1,66 @@
 var assert = require('assert'),
-    build = require('../../lib/build'),
-    _ = require('underscore'),
-    vm = require('vm'),
-    src,
-    init,
-    sandbox = {
-        "exports": null,
-        "console": console
-    },
-    ErrorClassModule = require('node.class/test/build/ErrorClass.class'),
+    buildModule = require('./test_setup').build,
+    load = require('./test_setup').load,    
     ErrorClass,
     testClass,
-    SuperSuperClassModule = require('node.class/test/build/SuperSuperClass.class'),
+    err,
     SuperSuperClass;
-
-function log(txt) {
-    console.log(txt.replace(/([\{\}\;])/gi, "$1\n"));
+    
+function build(name) {
+    buildModule(name + '.class');
+    ErrorClass = load(name + '.class');
 }
 
-function compile() {
-    sandbox.exports = ErrorClassModule;
-    src = build('node.class/test/build/ErrorClass.class', false);
-    vm.runInNewContext(src, sandbox);
-    ErrorClass = ErrorClassModule.Constructor;
-
-    sandbox.exports = SuperSuperClassModule;
-    src = build('node.class/test/build/SuperSuperClass.class', false);
-    vm.runInNewContext(src, sandbox);
-
-    if(ErrorClassModule.InitConstructor) {
-        ErrorClassModule.InitConstructor();
+function tryIt(func) {
+    try {
+        func();
+    } catch(e) {
+        err = e.message;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-assert.throws(function() {
-    build("");
+tryIt(function() {
+    build('Error2Init');
 });
+assert.equal(err, 'build error in Error2Init.class: found two init methods "initialize" and "init".');
 
-assert.throws(function() {
-    build({});
-});
+///////////////////////////////////////////////////////////////////////////////////////
 
-assert.throws(function() {
-    build('node.class/test/build/ErrorClass.class', false);
+tryIt(function() {
+    build('ErrorInitNonFunc');
 });
+assert.equal(err, 'build error in ErrorInitNonFunc.class: the init method "init" is not a function.');
 
-init = ErrorClassModule.Class.init;
-delete ErrorClassModule.Class.init;
-ErrorClassModule.Class.initialize = false;
-assert.throws(function() {
-    build('node.class/test/build/ErrorClass.class', false);
-});
+///////////////////////////////////////////////////////////////////////////////////////
 
-ErrorClassModule.Class.init = init;
-delete ErrorClassModule.Class.initialize;
-compile();
-assert.throws(function() {
-    var test = new ErrorClass();
+tryIt(function() {
+    build('Abstract1Error');
 });
+assert.equal(err, 'build error in Abstract1Error.class: you didnt take care of the inherited abstracts function(s) "?abstract".\ndeclare them as abstract or implement them without the "?"-prefix.');
 
-ErrorClassModule.Class.abstract = false;
-assert.throws(function() {
-    build('node.class/test/build/ErrorClass.class', false);
-});
+///////////////////////////////////////////////////////////////////////////////////////
 
-delete ErrorClassModule.Extends;
-compile();
-assert.throws(function() {
-    var test = new ErrorClass();
+tryIt(function() {
+    build('Abstract2Error');
 });
+assert.equal(err, 'build error in Abstract2Error.class: you can only define abstract functions.\nhowever, the abstract property "?anotherAbstract" is typeof boolean.');
 
-ErrorClassModule.Class["?anotherAbstract"] = false;
-assert.throws(function() {
-    build('node.class/test/build/ErrorClass.class', false);
-});
+///////////////////////////////////////////////////////////////////////////////////////
 
-delete ErrorClassModule.Class["?anotherAbstract"];
-compile();
-assert.throws(function() {
-    var test = new ErrorClass();
+build('Abstract3Error');
+tryIt(function() {
+    testClass = new ErrorClass();
 });
+assert.equal(err, 'class error in Abstract3Error.class:\nyou cant instantiate an abstract class. these methods are declared as abstract: "?anotherAbstract", "?abstract".');
+
+///////////////////////////////////////////////////////////////////////////////////////    
+
+build('RecursionError');
+tryIt(function() {
+    testClass = new ErrorClass();
+});
+assert.equal(err, 'class error in RecursionError.class:\nconstructor recursion detected.');
+
+///////////////////////////////////////////////////////////////////////////////////////

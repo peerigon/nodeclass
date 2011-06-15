@@ -1,13 +1,9 @@
 var assert = require('assert'),
-    build = require('../../lib/build'),
-    ClassModule = require('node.class/test/build/Class.class'),
-    Class,
+    Class = require('./compiled_beauty/node_modules/Class.class'),
     testClass,
-    SuperClassModule = require('node.class/test/build/SuperClass.class'),
-    SuperClass,
+    SuperClass = require('./compiled_beauty/node_modules/SuperClass.class'),
     testSuperClass,
-    SuperSuperClassModule = require('node.class/test/build/SuperSuperClass.class'),
-    SuperSuperClass,
+    SuperSuperClass = require('./compiled_beauty/node_modules/SuperSuperClass.class'),
     testSuperSuperClass;
 
 function log(txt) {
@@ -16,16 +12,13 @@ function log(txt) {
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-ClassModule.InitConstructor();
+Class.$init();
 
-Class = ClassModule.Constructor;
-SuperClass = SuperClassModule.Constructor;
-SuperSuperClass = SuperSuperClassModule.Constructor;
 testClass = new Class("argument 1", "argument 2");
 testClass.assertProperties();
-assert.notEqual(testClass.getIsClassInit(), ClassModule.Class.isClassInit);
-assert.notEqual(testClass.getIsSuperClassInit(), SuperClassModule.Class.isSuperClassInit);
-assert.notEqual(testClass.getIsSuperSuperClassInit(), SuperSuperClassModule.Class.isSuperSuperClassInit);
+assert.notEqual(testClass.getIsClassInit(), Class.isClassInit);
+assert.notEqual(testClass.getIsSuperClassInit(), Class.isSuperClassInit);
+assert.notEqual(testClass.getIsSuperSuperClassInit(), Class.isSuperSuperClassInit);
 assert.equal(testClass.getIsClassInit(), true);
 assert.equal(testClass.getIsSuperClassInit(), true);
 assert.equal(testClass.getIsSuperSuperClassInit(), true);
