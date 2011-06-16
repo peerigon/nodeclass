@@ -28,7 +28,7 @@ function build(className) {
     var src = fs.readFileSync(__dirname + '/src/node_modules/' + className + '.js', 'utf8');
     var classModule = loadSrc(className);
     
-    src = src + '\n' + buildModule(className, classModule);
+    src = src + '\n' + buildModule(classModule, className);
     
     fs.writeFileSync(__dirname + '/compiled/node_modules/' + className + '.js', src);
 }
