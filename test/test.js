@@ -7,5 +7,6 @@ reporter.run(
         'build/buildExpected.js',
         'build/build.js',
         'build/buildErrors.js',
+        'compile/compile.js'
     ]
 );

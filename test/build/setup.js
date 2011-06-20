@@ -23,7 +23,7 @@ function loadSrc(className) {
     return classModule;
 }
 
-function build(className) {
+function compile(className) {
     var buildModule = require('../../lib/build');
     var src = fs.readFileSync(__dirname + '/src/node_modules/' + className + '.js', 'utf8');
     var classModule = loadSrc(className);
@@ -38,6 +38,6 @@ function load(className) {
 }
 
 exports.log = log;
-exports.build = build;
+exports.compile = compile;
 exports.load = load;
 exports.loadSrc = loadSrc;

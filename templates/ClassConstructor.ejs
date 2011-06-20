@@ -19,7 +19,7 @@ var Constructor = function() {
     }
 
     if(constructorIsRunning) { <% /* if the constructor is currently running, it looks like it's trying to call itself. therefore a recursion error is thrown. */ %>
-        throw new Error("class error in <%= classFile %>: constructor recursion detected.");
+        throw new Error("Class error in " + __filename + ": Constructor recursion detected.");
         return;
     } else {
         Constructor.$ = {

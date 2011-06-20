@@ -1,6 +1,6 @@
 var setup = require('./setup'),
     testCase = require('nodeunit').testCase,
-    build = setup.build,
+    compile = setup.compile,
     load = setup.load,
     Class,
     testClass,
@@ -12,11 +12,11 @@ var setup = require('./setup'),
 ///////////////////////////////////////////////////////////////////////////////////////
 
 module.exports = testCase({
-    build: function(test) {
+    compile: function(test) {
         test.doesNotThrow(function() {
-            build('Class.class');
-            build('SuperClass.class');
-            build('SuperSuperClass.class');
+            compile('Class.class');
+            compile('SuperClass.class');
+            compile('SuperSuperClass.class');
         });
         test.done();
     },

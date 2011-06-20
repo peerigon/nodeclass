@@ -1,8 +1,8 @@
-var Class = require('./compiled_nice/node_modules/Class.class'),
+var Class = require('./compiled_expected/node_modules/Class.class'),
     testClass,
-    SuperClass = require('./compiled_nice/node_modules/SuperClass.class'),
+    SuperClass = require('./compiled_expected/node_modules/SuperClass.class'),
     testSuperClass,
-    SuperSuperClass = require('./compiled_nice/node_modules/SuperSuperClass.class'),
+    SuperSuperClass = require('./compiled_expected/node_modules/SuperSuperClass.class'),
     testSuperSuperClass,
     testCase = require('nodeunit').testCase;
 

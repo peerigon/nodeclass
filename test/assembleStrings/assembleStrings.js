@@ -49,7 +49,7 @@ module.exports = testCase({
     assembleStrings: function(test) {
         var This = collect.collectProperties(ClassModule.Class),
             Super = collect.collectSuperProperties(SuperClassModule),
-            src = assembleStrings(This, 'Class.js', Super);
+            src = assembleStrings(This, Super);
         
         test.doesNotThrow(function() {
             vm.runInNewContext(src, sandbox);
