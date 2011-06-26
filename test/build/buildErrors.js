@@ -1,11 +1,11 @@
 var testCase = require('nodeunit').testCase,
     compile = require('./setup').compile,
-    load = require('./setup').load,    
+    load = require('./setup').load,
     ErrorClass,
     testClass,
     err,
     SuperSuperClass;
-    
+
 function build(name) {
     compile(name + '.class');
     ErrorClass = load(name + '.class');
@@ -38,7 +38,7 @@ module.exports = testCase({
         tryIt(function() {
             build('Abstract1Error');
         });
-        test.equal(err, 'You didnt take care of the inherited abstracts function(s) "?abstract".\nDeclare them as abstract or implement them without the "?"-prefix.');
+        test.equal(err, 'You didnt take care of the inherited abstract function(s) "?abstract".\nDeclare them as abstract or implement them without the "?"-prefix.');
         test.done();
     },
     abstract2Error: function(test) {
