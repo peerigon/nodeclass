@@ -36,6 +36,7 @@ var Constructor = function() {
 
         Properties = {};  <% /* creates the Properties-object, where all the class's properties are stored */ %>
         <%= properties %> <% /* gets replaced by various assignments for all properties: private, protected, public */ %>
+        Properties.Instance = this <% /* provides a reference to the wrapper within the Properties-object */ %>
 
         implAbstracts = implChildAbstracts;
 

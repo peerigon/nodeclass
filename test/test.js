@@ -1,5 +1,5 @@
 var reporter = require('nodeunit').reporters.default;
-    
+
 reporter.run(
     [
         'collect/collect.js',
