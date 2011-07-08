@@ -7,11 +7,13 @@ var Constructor = function() {
         exposeProtected,
         exposeNothing,
         Properties,
+        Instance,
         key;
 
     <% /* reads the flag-object. these flags are used to modify the constructor's behaviour. */ %>
     if(Constructor.$) {
         tmp = Constructor.$;
+        Instance = tmp.Instance; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
         implChildAbstracts = tmp.implChildAbstracts; <% /* an array that contains references to all abstract functions that are implemented in a child class */ %>
         constructorIsRunning = tmp.constructorIsRunning; <% /* indicates that this constructor is not finished yet. if this flag is true, an recursion error is thrown */ %>
         exposeProtected = tmp.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
@@ -34,9 +36,12 @@ var Constructor = function() {
             implChildAbstracts = {};
         }
 
+        if (Instance === undefined) {
+            Instance = this;
+        }
         Properties = {};  <% /* creates the Properties-object, where all the class's properties are stored */ %>
         <%= properties %> <% /* gets replaced by various assignments for all properties: private, protected, public */ %>
-        Properties.Instance = this <% /* provides a reference to the wrapper within the Properties-object */ %>
+        Properties.Instance = Instance;
 
         implAbstracts = implChildAbstracts;
 
