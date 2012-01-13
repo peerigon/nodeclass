@@ -1,0 +1,19 @@
+{
+  "author": "pandaa",
+  "name": "npm-test",
+  "description": "NPM test module",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "private": true,
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "engines": {
+    "node": "0.6.7"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
