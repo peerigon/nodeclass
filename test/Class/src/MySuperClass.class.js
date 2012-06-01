@@ -1,8 +1,6 @@
 "use strict"; // run code in ES5 strict mode
 
-var Class = require("../../lib").Class;
-
-var MySuperClass = new Class({
+var MySuperClass = {
     init: function () {
         console.log("MySuperClass");
     },
@@ -11,6 +9,6 @@ var MySuperClass = new Class({
         this.myAbstract();
     },
     "?myAbstract": Function
-});
+};
 
 module.exports = MySuperClass;

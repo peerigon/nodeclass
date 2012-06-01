@@ -1,4 +1,7 @@
 var Module = this;
+var Class = module.exports; <% /* we don't know the variable name of the Class-descriptor but the object should be
+exported */ %>
+var Extends = Class.Extends;
 
 <%= classConstructor %>
 <%= initConstructor %>
