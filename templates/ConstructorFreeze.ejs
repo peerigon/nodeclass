@@ -1,0 +1,8 @@
+<% /*
+
+    In dev mode the Constructor is freezed to avoid unintentional changes to it.
+    Because of performance reasons we don't freeze objects in production mode.
+
+*/ %>
+
+Constructor = Object.freeze(Constructor);

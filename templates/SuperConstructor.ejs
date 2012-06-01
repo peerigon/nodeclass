@@ -1,9 +1,11 @@
-<% /* this function can be accessed within the init-function via this.Super(); */ %>
-Properties.Super = function() {
-    Extends.$ = {
-        "exposeProtected": true,
-        "implChildAbstracts": implAbstracts,
-        "Instance": Instance
-    };
-    Properties.Super = Extends.$construct(arguments);
+<% /*
+
+    this function can be accessed within the init-function via this.Super();
+
+ */ %>
+instance.Super = function () {
+    var superFlagObj = Class.Extends["@"];
+
+    superFlagObj.ChildClass = Class;
+    superInstance = instance.Super = superFlagObj.construct(arguments);
 };

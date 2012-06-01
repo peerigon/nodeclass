@@ -1,0 +1,17 @@
+<% /*
+
+    Returns the wrapper. If we're in dev mode, the wrapper is freezed. This way
+    unintentional changes on an instance will throw an error while developing.
+    Because of performance reasons we don't freeze objects in production mode.
+
+*/ %>
+
+<% if (dev) { %>
+
+return Object.freeze(wrapper):
+
+<% } else { %>
+
+return wrapper;
+
+<% } %>

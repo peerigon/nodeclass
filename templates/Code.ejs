@@ -1,8 +1,12 @@
-var Module = this;
+<% /*
+
+    this template wraps all other templates
+
+*/ %>
 
 <%= classConstructor %>
-<%= initConstructor %>
 
-<%= statics %> <% /* various static assignments that can be accessed via Class.staticProperty */ %>
+<% /* various static assignments that can be accessed via Class.staticProperty */ %>
+<%= statics %>
 
-module.exports = Constructor;
+<%= constructorFreeze %>

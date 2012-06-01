@@ -1,0 +1,90 @@
+<% /*
+
+    Template for the Constructor-function.
+    NOTE: All this code is executed everytime a new instance is created.
+    Therefore it should be high-performance.
+
+*/ %>
+
+var Constructor = function () {
+    var flagObj,
+        constructorIsRunning,
+        instance,
+        superInstance,
+        wrapper,
+        ChildClass;
+
+    <% /* reads the flag-object. these flags are used to modify theconstructor's behaviour. */ %>
+    if (Constructor["@"]) {
+        flagObj = Constructor["@"];
+        <% /* provides a reference to the child class */ %>
+        ChildClass = flagObj.ChildClass;
+        <% /* indicates that this constructor is not finished yet.
+         * if this flag is true, an recursion error is thrown */ %>
+        constructorIsRunning = flagObj.constructorIsRunning;
+    } else {
+        throw new ClassError(<%= classErrorFlagObjOverwritten %>);
+    }
+
+    if (ChildClass && ChildClass.Extends !== Constructor) {
+        throw new ClassError(<%= classErrorIllegalInstantiation %>);
+    }
+    if (Class.Extends) {
+        SuperClass = Class.Extends.Class;
+    }
+
+    <% /* if the class is abstract and the constructor is called by a non-child an error must be thrown */ %>
+    <%= abstractInstanceError %>
+
+    <% /* if the constructor is currently running, it looks like it's trying to call itself. */ %>
+    if (constructorIsRunning) {
+        throw new ClassError(<%= classErrorConstructorRecursion %>);
+    } else {
+        flagObj.constructorIsRunning = true;
+    }
+
+    <% /* the wrapper-object, where all the class's public methods are referenced */ %>
+    wrapper = {};
+    <% /* the instance-object, where all the class's properties are stored */ %>
+    instance = {
+        <%= properties %>
+        Instance: wrapper
+    };
+    <%= methods %>
+
+    <%= superConstructor %> <% /* gets replaced by the SuperConstructor-function, but only in case of the class has a super class. */ %>
+    <%= initCall %> <% /* the init function is called now, if it is available */ %>
+    <%= superConstructorCall %> <% /* now the super constructor is called in case of it hasnt been called by the init function of this class. */ %>
+
+
+    <%= publicProperties %> <% /* gets replaced by various assignments for all public properties */ %>
+    if (ChildClass) {
+        <%= protectedProperties %> <% /* gets replaced by various assignments for all protected properties */ %>
+    }
+
+    flagObj.constructorIsRunning = false;
+    flagObj = superInstance = flagObj.ChildClass = undefined;
+
+    <%= wrapperReturn %>
+};
+
+<% /*
+
+    Creating the flag obj
+
+*/ %>
+Constructor["@"] = {
+    <% /*
+
+        this special function is used to call the constructor with an arguments-array
+        since you cant use the .apply()-method with the new operator.
+
+    */ %>
+    construct: function (args) {
+        function Instance() {
+            return Constructor.apply(this, args);
+        }
+
+        return new Instance();
+    }
+};
