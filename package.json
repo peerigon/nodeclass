@@ -9,7 +9,8 @@
   "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
   "dependencies": {
       "toSrc": "0.1.x",
-      "underscore": "1.1.x"
+      "underscore": "1.1.x",
+      "fshelpers": "git://github.com/pandaa/fshelpers.git"
   },
   "engines": {
     "node": "0.6.x"
