@@ -1,22 +1,21 @@
 <% /*
 
     Template for the Constructor-function.
-    NOTE: All this code is executed everytime a new instance is created.
+    NOTE: All this code is executed every time a new instance is created.
     Therefore it should be high-performance.
 
 */ %>
 
 var Constructor = function () {
-    var flagObj,
+    var flagObj = Constructor["@"],
         constructorIsRunning,
         instance,
         superInstance,
         wrapper,
         ChildClass;
 
-    <% /* reads the flag-object. these flags are used to modify theconstructor's behaviour. */ %>
-    if (Constructor["@"]) {
-        flagObj = Constructor["@"];
+    <% /* reads the flag-object. these flags are used to modify the constructor's behaviour. */ %>
+    if (typeof flagObj === "object" && flagObj.nodeClass === true) {
         <% /* provides a reference to the child class */ %>
         ChildClass = flagObj.ChildClass;
         <% /* indicates that this constructor is not finished yet.
@@ -86,5 +85,14 @@ Constructor["@"] = {
         }
 
         return new Instance();
-    }
+    },
+
+    <% /*
+
+        this attribute indicates that the "@"-object was created by node class.
+        It's used to detect overrides by other frameworks that attempt to modify
+        the flag obj.
+
+    */ %>
+    nodeClass: true
 };

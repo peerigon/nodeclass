@@ -11,7 +11,7 @@ var expect = require("expect.js");
  */
 function checkError(ErrorConstructor) {
     return function (err) {
-        expect(err.constructor).to.be(ErrorConstructor);
+        expect(err instanceof ErrorConstructor).to.be(true);
     };
 }
 

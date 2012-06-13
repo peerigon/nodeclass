@@ -2,7 +2,7 @@
 
 var expect = require("expect.js"),
     is = require("metaclass").helpers.is,
-    detectConstructor = require("../lib/classes/PropertyNameDetection.class.js").detectConstructor,
+    detect = require("../lib/classes/PropertyDetection.class.js").detect,
     buildMetaConstructor = require("../lib/metaBuilders/buildMetaConstructor.js"),
     Method = require("metaclass").Method,
     Visibility = require("metaclass").Visibility,
@@ -12,7 +12,7 @@ describe("buildMetaConstructor", function () {
     var checkForTypeError = checkError(TypeError);
 
     function test(key, value) {
-        return buildMetaConstructor(key, value, is(value), detectConstructor(key, value));
+        return buildMetaConstructor(key, value, is(value), detect(key, value));
     }
 
     it("should return an instance of Method", function () {
@@ -51,7 +51,7 @@ describe("buildMetaConstructor", function () {
 
         expect(test("construct", constructor).getFunction()).to.be(constructor);
     });
-    it("should throw an exception when the value is no function", function () {
+    it("should throw an exception when the value is not a function", function () {
         expect(function () {
             test("construct", undefined);
         }).to.throwException(checkForTypeError);
