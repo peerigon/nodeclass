@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "Enables you to write JavaScript-classes in an oop way on nodeJS-servers.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "homepage": "http://github.com/pandaa/nodeclass",
   "repository": "git://github.com/pandaa/nodeclass.git",
   "main": "./lib/index.js",
