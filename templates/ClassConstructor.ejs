@@ -15,18 +15,8 @@ var Constructor = function() {
         tmp = Constructor.$;
         Instance = tmp.Instance; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
         implChildAbstracts = tmp.implChildAbstracts; <% /* an array that contains references to all abstract functions that are implemented in a child class */ %>
-        constructorIsRunning = tmp.constructorIsRunning; <% /* indicates that this constructor is not finished yet. if this flag is true, an recursion error is thrown */ %>
         exposeProtected = tmp.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
         exposeNothing = tmp.exposeNothing; <% /* if true, the constructor does nothing */ %>
-    }
-
-    if(constructorIsRunning) { <% /* if the constructor is currently running, it looks like it's trying to call itself. therefore a recursion error is thrown. */ %>
-        throw new Error("Class error in " + __filename + ": Constructor recursion detected.");
-        return;
-    } else {
-        Constructor.$ = {
-            "constructorIsRunning": true
-        };
     }
 
     <%= abstractInstanceError %> <% /* if the class is abstract and the constructor is called by a non-child an error must be thrown */ %>
