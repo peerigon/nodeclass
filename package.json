@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "Enables you to write JavaScript-classes in an oop way on nodeJS-servers.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "homepage": "http://github.com/pandaa/nodeclass",
   "repository": "git://github.com/pandaa/nodeclass.git",
   "main": "./lib/index.js",
@@ -12,7 +12,8 @@
       "fshelpers": "git://github.com/pandaa/fshelpers.git",
       "metaclass": "git://github.com/pandaa/metaclass.git"
   },
+  "preferGlobal": true,
   "engines": {
-    "node": "<=0.8.x"
+    "node": "< 0.9.x"
   }
 }
