@@ -24,6 +24,8 @@ assert.throws(function () {
     mySuperClass = new MySuperClass();
 });
 
+myOtherClass.checkInstanceOf();
+
 require("./src/MyClass.class.js");
 require("./src/subdir/MyOtherClass.class.js");
 require("./src/MySuperClass.class.js");

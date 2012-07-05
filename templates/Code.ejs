@@ -8,4 +8,8 @@ var Extends = Class.Extends;
 
 <%= statics %> <% /* various static assignments that can be accessed via Class.staticProperty */ %>
 
+if (typeof <%= className %> !== "undefined") {
+    <%= className %> = Constructor;
+}
+
 module.exports = Constructor;
