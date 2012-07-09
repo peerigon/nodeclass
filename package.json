@@ -1,16 +1,16 @@
 {
   "name": "nodeclass",
   "description": "Enables you to write JavaScript-classes in an oop way on nodeJS-servers.",
-  "version": "0.1.12",
-  "homepage": "http://github.com/pandaa/nodeclass",
-  "repository": "git://github.com/pandaa/nodeclass.git",
+  "version": "0.1.13",
+  "homepage": "http://github.com/peerigon/nodeclass",
+  "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
   "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
   "dependencies": {
       "toSrc": "0.1.x",
       "underscore": "1.3.x",
-      "fshelpers": "git://github.com/pandaa/fshelpers.git",
-      "metaclass": "git://github.com/pandaa/metaclass.git"
+      "fshelpers": "git://github.com/peerigon/fshelpers.git",
+      "metaclass": "git://github.com/peerigon/metaclass.git"
   },
   "devDependencies": {
       "browserify": "1.13.x",
