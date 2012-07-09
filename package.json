@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "Enables you to write JavaScript-classes in an oop way on nodeJS-servers.",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
