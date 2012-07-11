@@ -19,7 +19,6 @@ var MyOtherClass = new Class({
         return this.Super._protectedMethod();
     },
     checkInstanceOf: function () {
-        debugger;
         assert.ok(is(this.Instance).instanceOf(MyOtherClass) === true);
         assert.ok(is(this.Instance).instanceOf(MyClass) === true);
         assert.ok(is(this.Instance).instanceOf(MySuperClass) === true);
