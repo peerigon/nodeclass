@@ -5,7 +5,7 @@
     "version": "0.1.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/pandaa/nodeclass"
+        "url": "https://github.com/peerigon/nodeclass"
     },
     "main": "./lib/index.js",
     "scripts": {
@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "ejs": "0.7.x",
-        "metaclass": "git://github.com/pandaa/metaclass.git"
+        "metaclass": "git://github.com/peerigon/metaclass.git"
     },
     "devDependencies": {
         "mocha": "1.0.x",
