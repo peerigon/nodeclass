@@ -4,9 +4,12 @@ exported */ %>
 var Extends = Class.Extends;
 
 <%= classConstructor %>
-<%= initConstructor %>
 
-<%= statics %> <% /* various static assignments that can be accessed via Class.staticProperty */ %>
+<%= statics %>
+
+if (Class.Extends) {
+    Constructor.Extends = Class.Extends;
+}
 
 if (typeof <%= className %> !== "undefined") {
     <%= className %> = Constructor;

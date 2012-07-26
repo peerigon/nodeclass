@@ -1,7 +1,0 @@
-<% /* Adds the super class as a prototype of this class. This is necessary to make the instanceof-operator work.*/ %>
-<% /* To avoid the pollution by unused properties, the exposeNothing-flag of the super constructor is set true.*/ %>
-
-Extends.$ = {
-    "exposeNothing": true
-};
-Constructor.prototype=new Extends();
