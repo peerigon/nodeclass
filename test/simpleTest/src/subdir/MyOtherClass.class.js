@@ -15,8 +15,11 @@ var MyOtherClass = new Class({
     __privateMethod: function () {
         throw new Error("You can't call me");
     },
-    returnProtected: function () {
-        return this.Super._protectedMethod();
+    checkAccessToProtected: function () {
+        assert.equal(this.Super._getProtectedString(), "protected hello");
+        this.Super._setProtectedString("changed");
+        assert.equal(this.Super._getProtectedString(), "changed");
+        assert.equal(this.Super._protectedMethod(), "this is protected");
     },
     checkInstanceOf: function () {
         assert.ok(is(this.Instance).instanceOf(MyOtherClass) === true);

@@ -6,6 +6,7 @@ var Class = require("../../../lib/index.js").Class,
 module.exports = new Class({
     someNumber: 2,
     someString: "hello",
+    _protectedString: "protected hello",
     initCalled: false,
     init: function () {
         this.initCalled = true;

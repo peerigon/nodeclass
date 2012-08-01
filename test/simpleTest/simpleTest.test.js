@@ -19,11 +19,11 @@ myOtherClass.setSomeNumber(3);
 assert.ok(myOtherClass.getSomeNumber() === 3);
 assert.ok(MyOtherClass.someStatic === true);
 assert.ok(myOtherClass.__privateMethod === undefined);
-assert.ok(myOtherClass.returnProtected() === "this is protected");
 assert.throws(function () {
     mySuperClass = new MySuperClass();
 });
 
+myOtherClass.checkAccessToProtected();
 myOtherClass.checkInstanceOf();
 
 require("./src/MyClass.class.js");
