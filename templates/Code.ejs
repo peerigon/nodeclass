@@ -1,18 +1,14 @@
-var Module = this;
-var Class = module.exports; <% /* we don't know the variable name of the Class-descriptor but the object should be
-exported */ %>
-var Extends = Class.Extends;
+//// Compiled /////////////////////////////////////////////////////////////
+(function createClass(Class) {
 
 <%= classConstructor %>
-
 <%= statics %>
 
-if (Class.Extends) {
-    Constructor.Extends = Class.Extends;
-}
-
-if (typeof <%= className %> !== "undefined") {
+Constructor.Extends = Class.Extends;
+module.exports = Constructor;
+if (typeof <%= className %> === "object") {
     <%= className %> = Constructor;
 }
 
-module.exports = Constructor;
+})(module.exports);
+///////////////////////////////////////////////////////////////////////////

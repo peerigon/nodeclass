@@ -6,7 +6,7 @@ var Class = require("../../../../lib/index.js").Class,
     MyClass = require("../MyClass.class.js"),
     MySuperClass = require("../MySuperClass.class.js");
 
-var MyOtherClass = new Class({
+var MyOtherClass = new Class("MyOtherClass", {
     Extends: MyClass,
     isInitCalled: function () {
         return this.Super.isInitCalled();

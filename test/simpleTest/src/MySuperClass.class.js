@@ -3,7 +3,7 @@
 var Class = require("../../../lib/index.js").Class,
     assert = require("assert");
 
-module.exports = new Class({
+module.exports = new Class("MySuperClass", {
     someNumber: 2,
     someString: "hello",
     _protectedString: "protected hello",
