@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "JavaScript-classes for node",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
