@@ -8,7 +8,10 @@ var A = new Class("A", {
     $initArguments: [],
     init: function () {
         A.initCallOrder.push("A");
-        A.initArguments.push(arguments);
+        A.initArguments.push(Array.prototype.slice.call(arguments));
+    },
+    callSuper1: function (str) {
+        return str;
     }
 });
 

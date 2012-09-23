@@ -19,12 +19,17 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(Named).to.be.a("function");
             expect(Named.name).to.be("MyClass");
         });
+        it("should throw an error when a class uses illegal characters", function () {
+            expect(function () {
+                var IllegalCharClass = require("./Class/Naming/IllegalCharClass.class.js");
+            }).to.throwException();
+        });
     });
     describe("Visibility", function () {
-        it("should expose only public functions", function () {
-            var SimpleClass = require("./Class/Visibility/SimpleClass.class.js"),
-                simpleClass = new SimpleClass();
+        var SimpleClass = require("./Class/Visibility/SimpleClass.class.js"),
+            simpleClass = new SimpleClass();
 
+        it("should expose only public functions", function () {
             expect(simpleClass).to.only.have.keys([
                 "setUndefinedProp",
                 "setNullProp",
@@ -88,27 +93,82 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
         });
     });
     describe("Inheritance", function () {
+        var C = require("./Class/Inheritance/C.class.js"),
+            A = require("./Class/Inheritance/A.class.js");
+
         it("should execute the init function in the right order", function () {
-            var C = require("./Class/Inheritance/C.class.js"),
-                A = require("./Class/Inheritance/A.class.js"),
-                c;
+            var c;
 
             c = new C();
             expect(A.initCallOrder).to.eql(["C", "B", "A"]);
         });
-    });
-    describe("Mistakes", function () {
-        it("should throw an error when a class uses illegal characters", function () {
-            expect(function () {
-                var IllegalCharClass = require("./Class/Mistakes/IllegalCharClass.class.js");
-            }).to.throwException();
+        it("should pass the init-arguments up the inheritance chain", function () {
+            var c;
+
+            A.initArguments = [];
+            c = new C(1, 2, 3);
+            expect(A.initArguments).to.eql([[1, 2, 3], [1, 2, 3], []]);
         });
+        it("should copy inherited public methods to the child", function () {
+            var c;
+
+            c = new C();
+            expect(c.callSuper1("hello")).to.be("hello");
+            expect(c.callSuper2("hello")).to.be("hello");
+        });
+        it("should make protected properties available to the child", function () {
+            var c,
+                instance;
+
+            c = new C();
+            instance = c.exposeThis();
+            expect(instance.Super._protectedMethod).to.be.a(Function);
+            expect(instance.Super._protectedProperty).to.be(undefined);
+            instance.Super._setProtectedProperty(3);
+            expect(instance.Super._getProtectedProperty()).to.be(3);
+        });
+        it("should hide private properties from the child", function () {
+            var c,
+                instance;
+
+            c = new C();
+            instance = c.exposeThis();
+            expect(instance.Super.__privateMethod).to.be(undefined);
+            expect(instance.Super.__privateProperty).to.be(undefined);
+            expect(instance.Super.__getPrivateProperty).to.be(undefined);
+            expect(instance.Super.__setPrivateProperty).to.be(undefined);
+        });
+    });
+    describe("Static", function () {
+        var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
+
         it("should make static properties prefixed with _ public", function () {
             // because there are no private static properties
-            var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
-
             expect(SimpleClass._staticMethod).to.be.a("function");
             expect(SimpleClass.__staticMethod).to.be.a("function");
+        });
+    });
+    describe("Abstract", function () {
+        var A = require("./Class/Abstract/A.class.js"),
+            B = require("./Class/Abstract/B.class.js");
+        
+        it("should throw an error when trying to instantiate an abstract class", function () {
+            expect(function () {
+                var a = new A();
+            }).to.throwError();
+        });
+        it("should throw an error when a child of an abstract class does not handle the abstract property", function () {
+            expect(function () {
+                var NotImplemented = require("./Class/Abstract/NotImplement.js");
+            }).to.throwError();
+        });
+        it("should not throw an error when trying to instantiate a former abstract class", function () {
+            var b = new B();
+        });
+        it("should make the implemented method available in the abstract class", function () {
+            var b = new B();
+
+            expect(b.callAbstractMethod()).to.be("hello from Class B");
         });
     });
 });

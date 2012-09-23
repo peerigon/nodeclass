@@ -28,7 +28,7 @@ describe("registry", function () {
 
             expectedEntry = {
                 descriptor: descrA,
-                constructor: constrA,
+                constructorFunc: constrA,
                 compiledSrc: srcA
             };
             entry = registry.getEntry(descrA);
@@ -38,7 +38,7 @@ describe("registry", function () {
 
             expectedEntry = {
                 descriptor: descrB,
-                constructor: constrB,
+                constructorFunc: constrB,
                 compiledSrc: srcB
             };
             entry = registry.getEntry(descrB);
@@ -48,7 +48,7 @@ describe("registry", function () {
 
             expectedEntry = {
                 descriptor: descrC,
-                constructor: constrC,
+                constructorFunc: constrC,
                 compiledSrc: srcC
             };
             entry = registry.getEntry(descrC);

@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "JavaScript-classes for node",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
@@ -16,7 +16,7 @@
       "mocha": "1.x",
       "expect.js": "0.x",
       "browserify": "1.x",
-      "webpack": "0.5.8"
+      "webpack": "0.x"
   },
   "engines": {
     "node": "< 0.9.x"

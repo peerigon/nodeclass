@@ -9,6 +9,6 @@ describe("Class (node only)", function () {
     it("should add a new entry to the registry", function () {
         var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
 
-        expect(registry.getEntry(SimpleClass).constructor).to.be(SimpleClass);
+        expect(registry.getEntry(SimpleClass).constructorFunc).to.be(SimpleClass);
     });
 });

@@ -9,6 +9,7 @@ var b = require("browserify")({ debug: true }),
 
 var entryFilename = pathUtil.resolve(__dirname, "../simpleTest/simpleTest.test.js");
 
+
 b.use(nodeclass.bundlers.browserify);
 b.addEntry(entryFilename);
 fs.writeFileSync(__dirname + "/browserifyBundle.js", b.bundle(), "utf8");
@@ -23,4 +24,5 @@ webpack(entryFilename, {
     ]
 }, function onWebpackFinished(err, stats) {
     if (err) throw err;
+    if (stats.errors.length > 0) throw stats.errors[0];
 });
