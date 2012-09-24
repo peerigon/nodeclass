@@ -159,7 +159,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
         });
         it("should throw an error when a child of an abstract class does not handle the abstract property", function () {
             expect(function () {
-                var NotImplemented = require("./Class/Abstract/NotImplement.js");
+                var NotImplemented = require("./Class/Abstract/NotImplemented.js");
             }).to.throwError();
         });
         it("should not throw an error when trying to instantiate a former abstract class", function () {
