@@ -8,6 +8,9 @@ var Constructor = function <%= className %>() {
         Instance,
         key;
 
+    if (this === undefined) {
+        throw new Error("(nodeclass) Cannot create Class: You're trying to instantiate a class without the newoperator");
+    }
     <% /* reads the flag-object. these flags are used to modify the constructor's behaviour. */ %>
     if(Constructor.$) {
         tmp = Constructor.$;
