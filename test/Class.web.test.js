@@ -4,7 +4,7 @@ var expect = require("expect.js"),
     Class = require("../lib/node/Class.js"),
     _ = require("underscore");
 
-//TODO Finish tests and for node and web
+//TODO Finish tests for node and web
 describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function () {
     describe("naming", function () {
         it("should return a named function when passing a name and a descriptor", function () {
