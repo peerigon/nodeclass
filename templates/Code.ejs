@@ -17,13 +17,6 @@
             Instance = this,
             key;
 
-        <% if ($superProperties) { %>
-        Super = function () {
-            this.Super = Class.Extends.$construct(Instance, arguments);
-            return this.Super;
-        };
-        <% } %>
-
         if (this === undefined) {
             throw new Error("(nodeclass) Cannot create Class: You're trying to instantiate a class without the new operator");
         }
@@ -31,9 +24,34 @@
         if (instructions) {
             Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
             exposeProtected = instructions.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
+            overriddenMethods = instructions.overriddenMethods;
         }
 
+        <% if ($superProperties) { %>
+        Super = function () {
+            this.Super = Class.Extends.$construct({
+                exposeProtected: true,
+                overriddenMethods: overriddenMethods,
+                Instance: Instance
+            }, arguments);
+            return this.Super;
+        };
+        <% } %>
+
         properties = new Properties(Instance, Super);
+
+        for (key in overriddenMethods) {
+            if (overriddenMethods.hasOwnProperty(key)) {
+                properties[key] = overriddenMethods[key];
+            }
+        }
+
+        <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
+        overriddenMethods = overriddenMethods || {};
+        <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
+        overriddenMethods.<%= methodName %> = properties.<%= methodName %>;
+        <% }); %>
+        <% } %>
 
         <% if ($classMap.hasInit) { %>
         Class.init.apply(properties, arguments);
@@ -45,11 +63,7 @@
             properties.Super.apply(properties, arguments);
         };
         Super = properties.Super;
-        overriddenMethods = [
-            <% _(_($classMap.overriddenMethods).keys()).reduce(function printOverriddenMethods(list, methodName) { %>
-            properties.<%= methodName %>,
-            <% }, ""); %>
-        ];
+
         <% } %>
 
         <% /* Exporting all public methods */ %>
@@ -96,16 +110,13 @@
     <% }); %>
 
     <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
-    Constructor.$construct = function (wrapper, args) {
+    Constructor.$construct = function (instructions, args) {
         function Instance() {
             return Constructor.apply(this, args);
         }
         Instance.prototype = Constructor.prototype;
 
-        Constructor["@"] = {
-            exposeProtected: true,
-            Instance: wrapper
-        };
+        Constructor["@"] = instructions;
 
         return new Instance();
     };

@@ -158,6 +158,29 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(C.initCallOrder).to.be(undefined);
         });
     });
+    describe.only("Overriding", function () {
+        var C = require("./Class/Overriding/C.class.js"),
+            c = new C(),
+            cThis = c.exposeCThis(),
+            bThis = c.exposeBThis(),
+            aThis = c.exposeAThis();
+
+        it("should override all public methods in the inheritance chain", function () {
+            expect(aThis.getClassName).to.be(cThis.getClassName);
+            expect(bThis.getClassName).to.be(cThis.getClassName);
+        });
+        it("should override all protected methods in the inheritance chain", function () {
+            expect(aThis._getClassName).to.be(cThis._getClassName);
+            expect(bThis._getClassName).to.be(cThis._getClassName);
+        });
+        it("should not override all private methods in the inheritance chain", function () {
+            expect(aThis.__getClassName).not.to.be(cThis.__getClassName);
+            expect(bThis.__getClassName).not.to.be(cThis.__getClassName);
+        });
+        it("should still be possible to call the overridden method via this.Super", function () {
+            //expect(cThis.somePublicMethod()).to.be()
+        });
+    });
     describe("Static", function () {
         var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
 
