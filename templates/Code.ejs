@@ -1,4 +1,4 @@
-/*** Compiled *************************************************************/
+/*** COMPILED BY NODECLASS ********************************************************************************************/
 (function createConstructor(Class) {
     var Constructor;
 
@@ -8,22 +8,24 @@
     }
     Properties.prototype = Class;
 
-    Constructor = function <%= $this.className %>() {
+    Constructor = function <%= $classMap.className %>() {
         var instructions = Constructor["@"],
             exposeProtected,
             properties,
             Super = null,
-            Instance,
+            Instance = this,
             key;
 
         if (this === undefined) {
             throw new Error("(nodeclass) Cannot create Class: You're trying to instantiate a class without the new operator");
         }
 
-        Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
-        exposeProtected = instructions.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
+        if (instructions) {
+            Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
+            exposeProtected = instructions.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
+        }
 
-        <% if ($super) { %>
+        <% if ($superProperties) { %>
         Super = function () {
             this.Super = Class.Extends.$construct(Instance, arguments);
             return this.Super;
@@ -32,7 +34,7 @@
 
         properties = new Properties(Instance, Super);
 
-        <% if ($this.hasInit) {
+        <% if ($classMap.hasInit) { %>
         Class.init.apply(properties, arguments);
         <% } %>
 
@@ -43,29 +45,47 @@
         Super = properties.Super;
 
         <% /* Exporting all public methods */ %>
-        <% if ($super) { %>
-            <% _($super.public.method).each(function printPublicMethods(value, key) { %>
-        this.<%=key%> = Super.<%=key%>.bind(properties);
-            <% } %>
+        <% _($thisProperties.public.attribute).each(function printPublicSetterGetter(value, key) { %>
+        this.<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; };
+        this.<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
+        <% }); %>
+        <% if ($superProperties) { %>
+            <% _($superProperties.public.method).each(function printPublicMethods(value, key) { %>
+        this.<%= key %> = Super.<%= key %>.bind(properties);
+            <% }); %>
         <% } %>
-        <% _($this.properties.public.method).each(function printPublicMethods(value, key) { %>
-        this.<%=key%> = Class.<%=key%>.bind(properties);
-        <% } %>
+        <% _($thisProperties.public.method).each(function printPublicMethods(value, key) { %>
+        this.<%= key %> = Class.<%= key %>.bind(properties);
+        <% }); %>
 
         if (exposeProtected) {
+
             <% /* Exposing all protected methods */ %>
-            <% if ($super) { %>
-                <% _($super.public.method).each(function printProtectedMethods(value, key) { %>
-            this.<%=key%> = Super.<%=key%>.bind(properties);
-                <% } %>
+            <% _($thisProperties.protected.attribute).each(function printPublicSetterGetter(value, key) { %>
+            this._<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; };
+            this._<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
+            <% }); %>
+            <% if ($superProperties) { %>
+                <% _($superProperties.protected.method).each(function printProtectedMethods(value, key) { %>
+            this.<%= key %> = Super.<%= key %>.bind(properties);
+                <% }); %>
             <% } %>
-            <% _($this.public.method).each(function printProtectedMethods(value, key) { %>
-            this.<%=key%> = Class.<%=key%>.bind(properties);
-            <% } %>
+            <% _($thisProperties.protected.method).each(function printProtectedMethods(value, key) { %>
+            this.<%= key %> = Class.<%= key %>.bind(properties);
+            <% }); %>
+
         }
 
         delete Constructor["@"];
     };
+
+    <% /* Attaching static properties */ %>
+    <% _($thisProperties.static.attribute).each(function printStaticAttribute(value, key) { %>
+    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>;
+    <% }); %>
+    <% _($thisProperties.static.method).each(function printStaticMethod(value, key) { %>
+    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>.bind(null);
+    <% }); %>
 
     <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
     Constructor.$construct = function (wrapper, args) {
@@ -84,7 +104,7 @@
 
     Constructor.Extends = Class.Extends;
     module.exports = Constructor;
-    <%= $this.className %> = Constructor;
+    <%= $classMap.className %> = Constructor;
 
 })(module.exports);
-/***************************************************************************/
+/**********************************************************************************************************************/

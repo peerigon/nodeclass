@@ -86,7 +86,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(settersOverridden.getMyNumber3).to.be(undefined);
         });
     });
-    describe("inheritance", function () {
+    describe("Inheritance", function () {
         var C = require("./Class/inheritance/C.class.js"),
             A = require("./Class/inheritance/A.class.js");
 
@@ -133,36 +133,13 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(instance.Super.__setPrivateProperty).to.be(undefined);
         });
     });
-    describe("static", function () {
+    describe("Static", function () {
         var SimpleClass = require("./Class/visibility/SimpleClass.class.js");
 
         it("should make static properties prefixed with _ public", function () {
             // because there are no private static properties
             expect(SimpleClass._staticMethod).to.be.a("function");
             expect(SimpleClass.__staticMethod).to.be.a("function");
-        });
-    });
-    describe("Abstract", function () {
-        var A = require("./Class/Abstract/A.class.js"),
-            B = require("./Class/Abstract/B.class.js");
-        
-        it("should throw an error when trying to instantiate an abstract class", function () {
-            expect(function () {
-                var a = new A();
-            }).to.throwError();
-        });
-        it("should throw an error when a child of an abstract class does not handle the abstract property", function () {
-            expect(function () {
-                var NotImplemented = require("./Class/Abstract/NotImplemented.js");
-            }).to.throwError();
-        });
-        it("should not throw an error when trying to instantiate a former abstract class", function () {
-            var b = new B();
-        });
-        it("should make the implemented method available in the abstract class", function () {
-            var b = new B();
-
-            expect(b.callAbstractMethod()).to.be("hello from Class B");
         });
     });
 });
