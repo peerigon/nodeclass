@@ -4,13 +4,13 @@ var Class = require("../../../lib/index.js").Class;
 
 var C = new Class("C", {
     Extends: require("./B.class.js"),
-    getClassName: function () {
-        return "C " + this.Super.getClassName();
+    getClassNames: function () {
+        return "C " + this.Super.getClassNames();
     },
-    _getClassName: function () {
-        return "C " + this.Super._getClassName();
+    _getClassNames: function () {
+        return "C " + this.Super._getClassNames();
     },
-    __getClassName: function () {
+    __getClassNames: function () {
         return "C";
     },
     exposeCThis: function () {

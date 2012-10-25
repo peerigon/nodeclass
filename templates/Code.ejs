@@ -49,7 +49,7 @@
         <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
         overriddenMethods = overriddenMethods || {};
         <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
-        overriddenMethods.<%= methodName %> = properties.<%= methodName %>;
+        overriddenMethods.<%= methodName %> = properties.<%= methodName %>.bind(properties);
         <% }); %>
         <% } %>
 

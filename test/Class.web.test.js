@@ -158,7 +158,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(C.initCallOrder).to.be(undefined);
         });
     });
-    describe.only("Overriding", function () {
+    describe("Overriding", function () {
         var C = require("./Class/Overriding/C.class.js"),
             c = new C(),
             cThis = c.exposeCThis(),
@@ -166,19 +166,19 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             aThis = c.exposeAThis();
 
         it("should override all public methods in the inheritance chain", function () {
-            expect(aThis.getClassName).to.be(cThis.getClassName);
-            expect(bThis.getClassName).to.be(cThis.getClassName);
+            expect(aThis.getClassNames()).to.be(cThis.getClassNames());
+            expect(bThis.getClassNames()).to.be(cThis.getClassNames());
         });
         it("should override all protected methods in the inheritance chain", function () {
-            expect(aThis._getClassName).to.be(cThis._getClassName);
-            expect(bThis._getClassName).to.be(cThis._getClassName);
+            expect(aThis._getClassNames()).to.be(cThis._getClassNames());
+            expect(bThis._getClassNames()).to.be(cThis._getClassNames());
         });
         it("should not override all private methods in the inheritance chain", function () {
-            expect(aThis.__getClassName).not.to.be(cThis.__getClassName);
-            expect(bThis.__getClassName).not.to.be(cThis.__getClassName);
+            expect(aThis.__getClassNames()).not.to.be(cThis.__getClassNames());
+            expect(bThis.__getClassNames()).not.to.be(cThis.__getClassNames());
         });
         it("should still be possible to call the overridden method via this.Super", function () {
-            //expect(cThis.somePublicMethod()).to.be()
+            expect(cThis.getClassNames()).to.be("C B A");
         });
     });
     describe("Static", function () {

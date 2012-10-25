@@ -3,13 +3,13 @@
 var Class = require("../../../lib/index.js").Class;
 
 var A = new Class("A", {
-    getClassName: function () {
+    getClassNames: function () {
         return "A";
     },
-    _getClassName: function () {
+    _getClassNames: function () {
         return "A";
     },
-    __getClassName: function () {
+    __getClassNames: function () {
         return "A";
     },
     exposeAThis: function () {
