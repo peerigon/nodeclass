@@ -15,7 +15,6 @@
   "devDependencies": {
       "mocha": "1.x",
       "expect.js": "0.x",
-      "browserify": "1.x",
       "webpack": "0.x"
   },
   "engines": {

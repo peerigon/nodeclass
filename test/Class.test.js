@@ -11,4 +11,18 @@ describe("Class (node only)", function () {
 
         expect(registry.getEntry(SimpleClass).constructorFunc).to.be(SimpleClass);
     });
+    describe("Naming", function () {
+        it("should throw an error when a class uses illegal characters", function () {
+            expect(function () {
+                var IllegalCharClass = require("./Class/Naming/IllegalCharClass.class.js");
+            }).to.throwException();
+        });
+    });
+    describe("Presets", function () {
+        it("should throw an error with non-primitive instance attributes", function () {
+            expect(function () {
+                var NonPrimitivePresets = require("./Class/Attributes/NonPrimitivePresets.class.js");
+            }).to.throwException();
+        });
+    });
 });

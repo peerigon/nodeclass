@@ -8,6 +8,7 @@
     }
     Properties.prototype = Class;
 
+    (function () { /* self-executing function is necessary here because of shitty IE @see http://perfectionkills.com/a-closer-look-at-expression-closures/ */
     Constructor = function <%= $classMap.className %>() {
         var instructions = Constructor["@"],
             exposeProtected,
@@ -39,6 +40,7 @@
         <% } %>
 
         properties = new Properties(Instance, Super);
+        this.Class = Constructor;
 
         for (key in overriddenMethods) {
             if (overriddenMethods.hasOwnProperty(key)) {
@@ -68,7 +70,7 @@
 
         <% /* Exporting all public methods */ %>
         <% _($thisProperties.public.attribute).each(function printPublicSetterGetter(value, key) { %>
-        this.<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; };
+        this.<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; return Instance; };
         this.<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
         <% }); %>
         <% if ($superProperties) { %>
@@ -84,7 +86,7 @@
 
             <% /* Exposing all protected methods */ %>
             <% _($thisProperties.protected.attribute).each(function printPublicSetterGetter(value, key) { %>
-            this._<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; };
+            this._<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; return Instance; };
             this._<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
             <% }); %>
             <% if ($superProperties) { %>
@@ -100,13 +102,14 @@
 
         delete Constructor["@"];
     };
+    }());
 
     <% /* Attaching static properties */ %>
     <% _($thisProperties.static.attribute).each(function printStaticAttribute(value, key) { %>
     Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>;
     <% }); %>
     <% _($thisProperties.static.method).each(function printStaticMethod(value, key) { %>
-    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>.bind(null);
+    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>.bind(Constructor);
     <% }); %>
 
     <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
@@ -127,7 +130,10 @@
 
     Constructor.Extends = Class.Extends;
     module.exports = Constructor;
-    <%= $classMap.className %> = Constructor;
+    if (typeof <%= $classMap.className %> !== "undefined") {
+        <%= $classMap.className %> = Constructor;
+    }
+
 
 })(module.exports);
 /**********************************************************************************************************************/
