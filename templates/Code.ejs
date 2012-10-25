@@ -12,9 +12,17 @@
         var instructions = Constructor["@"],
             exposeProtected,
             properties,
+            overriddenMethods,
             Super = null,
             Instance = this,
             key;
+
+        <% if ($superProperties) { %>
+        Super = function () {
+            this.Super = Class.Extends.$construct(Instance, arguments);
+            return this.Super;
+        };
+        <% } %>
 
         if (this === undefined) {
             throw new Error("(nodeclass) Cannot create Class: You're trying to instantiate a class without the new operator");
@@ -25,24 +33,24 @@
             exposeProtected = instructions.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
         }
 
-        <% if ($superProperties) { %>
-        Super = function () {
-            this.Super = Class.Extends.$construct(Instance, arguments);
-            return this.Super;
-        };
-        <% } %>
-
         properties = new Properties(Instance, Super);
 
         <% if ($classMap.hasInit) { %>
         Class.init.apply(properties, arguments);
         <% } %>
 
+        <% if ($superProperties) { %>
         <% /* if the init-function hasn't been called this.Super() it's called now */ %>
         if (typeof properties.Super === "function") {
             properties.Super.apply(properties, arguments);
         };
         Super = properties.Super;
+        overriddenMethods = [
+            <% _(_($classMap.overriddenMethods).keys()).reduce(function printOverriddenMethods(list, methodName) { %>
+            properties.<%= methodName %>,
+            <% }, ""); %>
+        ];
+        <% } %>
 
         <% /* Exporting all public methods */ %>
         <% _($thisProperties.public.attribute).each(function printPublicSetterGetter(value, key) { %>
@@ -101,6 +109,10 @@
 
         return new Instance();
     };
+
+    <% if ($superProperties) { %>
+    Constructor.prototype = Class.Extends.prototype;
+    <% } %>
 
     Constructor.Extends = Class.Extends;
     module.exports = Constructor;

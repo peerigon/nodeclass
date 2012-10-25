@@ -7,6 +7,7 @@
   "main": "./lib/index.js",
   "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
   "dependencies": {
+      "cli-color": "0.x",
       "underscore": "1.x",
       "fshelpers": "git://github.com/peerigon/fshelpers.git",
       "metaclass": "git://github.com/peerigon/metaclass.git"

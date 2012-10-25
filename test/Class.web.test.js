@@ -6,21 +6,50 @@ var expect = require("expect.js"),
 
 //TODO Finish tests for node and web
 describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function () {
-    describe("naming", function () {
+    describe("Naming", function () {
         it("should return a named function when passing a name and a descriptor", function () {
-            var Named = require("./Class/naming/Named.class.js");
+            var Named = require("./Class/Naming/Named.class.js");
 
             expect(Named).to.be.a("function");
             expect(Named.name).to.be("MyClass");
         });
         it("should throw an error when a class uses illegal characters", function () {
             expect(function () {
-                var IllegalCharClass = require("./Class/naming/IllegalCharClass.class.js");
+                var IllegalCharClass = require("./Class/Naming/IllegalCharClass.class.js");
             }).to.throwException();
         });
     });
-    describe("visibility", function () {
-        var SimpleClass = require("./Class/visibility/SimpleClass.class.js"),
+    describe("Presets", function () {
+        var Presets = require("./Class/Presets/Presets.class.js"),
+            presets = new Presets(),
+            presetsThis = presets.exposeThis();
+
+        it("should preset all primitive instance attributes", function () {
+            expect(presetsThis.nullProp).to.be(null);
+            expect(presetsThis.numberProp).to.be(2);
+            expect(presetsThis.stringProp).to.be("hello");
+            expect(presetsThis._nullProp).to.be(null);
+            expect(presetsThis._numberProp).to.be(2);
+            expect(presetsThis._stringProp).to.be("hello");
+            expect(presetsThis.__nullProp).to.be(null);
+            expect(presetsThis.__numberProp).to.be(2);
+            expect(presetsThis.__stringProp).to.be("hello");
+        });
+        it("should preset all static attributes (including non-primitives)", function () {
+            expect(Presets.nullProp).to.be(null);
+            expect(Presets.numberProp).to.be(2);
+            expect(Presets.stringProp).to.be("hello");
+            expect(Presets.arrProp).to.eql([]);
+            expect(Presets.objProp).to.eql({});
+        });
+        it("should throw an error when trying to preset non-primitive instance attributes", function () {
+            expect(function () {
+                var NonPrimitivePresets = require("./Class/Presets/NonPrimitivePresets.class.js");
+            }).to.throwException();
+        });
+    });
+    describe("Visibility", function () {
+        var SimpleClass = require("./Class/Visibility/SimpleClass.class.js"),
             simpleClass = new SimpleClass();
 
         it("should expose only public functions", function () {
@@ -29,41 +58,33 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
                 "setNullProp",
                 "setNumberProp",
                 "setStringProp",
-                "setArrProp",
-                "setObjProp",
                 "getUndefinedProp",
                 "getNullProp",
                 "getNumberProp",
                 "getStringProp",
-                "getArrProp",
-                "getObjProp",
                 "publicMethod"
             ]);
         });
         it("should add a public getter and setter for non-function properties", function () {
-            var SimpleClass = require("./Class/visibility/SimpleClass.class.js"),
+            var SimpleClass = require("./Class/Visibility/SimpleClass.class.js"),
                 simpleClass = new SimpleClass();
 
             expect(simpleClass.getUndefinedProp()).to.be(undefined);
             expect(simpleClass.getNullProp()).to.be(null);
             expect(simpleClass.getNumberProp()).to.be(2);
             expect(simpleClass.getStringProp()).to.be("hello");
-            expect(simpleClass.getArrProp()).to.eql([]);
-            expect(simpleClass.getObjProp()).to.eql({});
         });
         it("should apply static properties as they are", function () {
-            var SimpleClass = require("./Class/visibility/SimpleClass.class.js");
+            var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
 
             expect(SimpleClass.undefinedProp).to.be(undefined);
             expect(SimpleClass.nullProp).to.be(null);
             expect(SimpleClass.numberProp).to.be(2);
             expect(SimpleClass.stringProp).to.be("hello");
-            expect(SimpleClass.arrProp).to.eql([]);
-            expect(SimpleClass.objProp).to.eql({});
             expect(SimpleClass.staticMethod).to.be.a("function");
         });
         it("should use specified getters if present", function () {
-            var GettersOverridden = require("./Class/visibility/GettersOverridden.class.js"),
+            var GettersOverridden = require("./Class/Visibility/GettersOverridden.class.js"),
                 gettersOverridden = new GettersOverridden();
 
             expect(gettersOverridden.getMyNumber1()).to.be(3);
@@ -74,7 +95,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(gettersOverridden.setMyNumber3).to.be(undefined);    // because __myNumber3 is private
         });
         it("should use specified setters if present", function () {
-            var SettersOverridden = require("./Class/visibility/SettersOverridden.class.js"),
+            var SettersOverridden = require("./Class/Visibility/SettersOverridden.class.js"),
                 settersOverridden = new SettersOverridden();
 
             settersOverridden.setMyNumber1(100);
@@ -87,32 +108,27 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
         });
     });
     describe("Inheritance", function () {
-        var C = require("./Class/inheritance/C.class.js"),
-            A = require("./Class/inheritance/A.class.js");
+        var C = require("./Class/Inheritance/C.class.js"),
+            B = require("./Class/Inheritance/B.class.js"),
+            A = require("./Class/Inheritance/A.class.js"),
+            c;
 
         it("should execute the init function in the right order", function () {
-            var c;
-
             c = new C();
             expect(A.initCallOrder).to.eql(["C", "B", "A"]);
         });
         it("should pass the init-arguments up the inheritance chain", function () {
-            var c;
-
             A.initArguments = [];
             c = new C(1, 2, 3);
             expect(A.initArguments).to.eql([[1, 2, 3], [1, 2, 3], []]);
         });
         it("should copy inherited public methods to the child", function () {
-            var c;
-
             c = new C();
             expect(c.callSuper1("hello")).to.be("hello");
             expect(c.callSuper2("hello")).to.be("hello");
         });
         it("should make protected properties available to the child", function () {
-            var c,
-                instance;
+            var instance;
 
             c = new C();
             instance = c.exposeThis();
@@ -122,8 +138,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(instance.Super._getProtectedProperty()).to.be(3);
         });
         it("should hide private properties from the child", function () {
-            var c,
-                instance;
+            var instance;
 
             c = new C();
             instance = c.exposeThis();
@@ -132,9 +147,19 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(instance.Super.__getPrivateProperty).to.be(undefined);
             expect(instance.Super.__setPrivateProperty).to.be(undefined);
         });
+        it("should return true when checking with the instanceof operator", function () {
+            c = new C();
+
+            expect(c instanceof C).to.be(true);
+            expect(c instanceof B).to.be(true);
+            expect(c instanceof A).to.be(true);
+        });
+        it("should not inherit static properties", function () {
+            expect(C.initCallOrder).to.be(undefined);
+        });
     });
     describe("Static", function () {
-        var SimpleClass = require("./Class/visibility/SimpleClass.class.js");
+        var SimpleClass = require("./Class/Visibility/SimpleClass.class.js");
 
         it("should make static properties prefixed with _ public", function () {
             // because there are no private static properties
