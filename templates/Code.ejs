@@ -3,18 +3,19 @@
     var Constructor;
 
     function Properties(Instance, Super) {
+        <%= $generate.methodBindings($classMap) %>
         this.Instance = Instance;
         this.Super = Super;
     }
     Properties.prototype = Class;
 
-    (function () { /* self-executing function is necessary here because of shitty IE @see http://perfectionkills.com/a-closer-look-at-expression-closures/ */
+    (function () { <% /* self-executing function is necessary here because of shitty IE @see http://perfectionkills.com/a-closer-look-at-expression-closures/ */ %>
     Constructor = function <%= $classMap.className %>() {
         var instructions = Constructor["@"],
-            exposeProtected,
+            exportProtected,
             properties,
             overriddenMethods,
-            Super = null,
+            Super,
             Instance = this,
             key;
 
@@ -23,19 +24,24 @@
         }
 
         if (instructions) {
+            if (instructions.doNothing) {
+                <% /* doNothing is necessary to make the instanceof operator work */ %>
+                delete Constructor["@"];
+                return;
+            }
             Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
-            exposeProtected = instructions.exposeProtected; <% /* if true, the constructor function exposes all protected class members */ %>
+            exportProtected = instructions.exportProtected; <% /* if true, the constructor function exposes all protected class members */ %>
             overriddenMethods = instructions.overriddenMethods;
         }
 
         <% if ($superProperties) { %>
         Super = function () {
-            this.Super = Class.Extends.$construct({
-                exposeProtected: true,
+            properties.Super = Class.Extends.$construct({
+                exportProtected: true,
                 overriddenMethods: overriddenMethods,
                 Instance: Instance
             }, arguments);
-            return this.Super;
+            return properties.Super;
         };
         <% } %>
 
@@ -62,42 +68,18 @@
         <% if ($superProperties) { %>
         <% /* if the init-function hasn't been called this.Super() it's called now */ %>
         if (typeof properties.Super === "function") {
-            properties.Super.apply(properties, arguments);
+            properties.Super.apply(null, arguments);
         };
         Super = properties.Super;
 
         <% } %>
 
         <% /* Exporting all public methods */ %>
-        <% _($thisProperties.public.attribute).each(function printPublicSetterGetter(value, key) { %>
-        this.<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; return Instance; };
-        this.<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
-        <% }); %>
-        <% if ($superProperties) { %>
-            <% _($superProperties.public.method).each(function printPublicMethods(value, key) { %>
-        this.<%= key %> = Super.<%= key %>.bind(properties);
-            <% }); %>
-        <% } %>
-        <% _($thisProperties.public.method).each(function printPublicMethods(value, key) { %>
-        this.<%= key %> = Class.<%= key %>.bind(properties);
-        <% }); %>
+        <%= $generate.publicExports($classMap) %>
 
-        if (exposeProtected) {
-
-            <% /* Exposing all protected methods */ %>
-            <% _($thisProperties.protected.attribute).each(function printPublicSetterGetter(value, key) { %>
-            this._<%= $nameModifiers.setter(key) %> = function (value) { properties.<%= key %> = value; return Instance; };
-            this._<%= $nameModifiers.getter(key) %> = function () { return properties.<%= key %>; };
-            <% }); %>
-            <% if ($superProperties) { %>
-                <% _($superProperties.protected.method).each(function printProtectedMethods(value, key) { %>
-            this.<%= key %> = Super.<%= key %>.bind(properties);
-                <% }); %>
-            <% } %>
-            <% _($thisProperties.protected.method).each(function printProtectedMethods(value, key) { %>
-            this.<%= key %> = Class.<%= key %>.bind(properties);
-            <% }); %>
-
+        if (exportProtected) {
+            <% /* Exporting all protected methods */ %>
+            <%= $generate.protectedExports($classMap) %>
         }
 
         delete Constructor["@"];
@@ -105,27 +87,24 @@
     }());
 
     <% /* Attaching static properties */ %>
-    <% _($thisProperties.static.attribute).each(function printStaticAttribute(value, key) { %>
-    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>;
-    <% }); %>
-    <% _($thisProperties.static.method).each(function printStaticMethod(value, key) { %>
-    Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>.bind(Constructor);
-    <% }); %>
+    <%= $generate.staticExports($classMap) %>
 
     <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
     Constructor.$construct = function (instructions, args) {
-        function Instance() {
+        function <%= $classMap.className %>() {
             return Constructor.apply(this, args);
         }
-        Instance.prototype = Constructor.prototype;
+        <%= $classMap.className %>.prototype = Constructor.prototype;
 
         Constructor["@"] = instructions;
 
-        return new Instance();
+        return new <%= $classMap.className %>();
     };
 
     <% if ($superProperties) { %>
-    Constructor.prototype = Class.Extends.prototype;
+    Constructor.prototype = Class.Extends.$construct({
+        doNothing: true
+    });
     <% } %>
 
     Constructor.Extends = Class.Extends;
