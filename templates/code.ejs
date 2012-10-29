@@ -6,6 +6,9 @@
         <%= $generate.methodBindings($classMap) %>
         this.Instance = Instance;
         this.Super = Super;
+        <% /* hiding meta-properties */ %>
+        this.Extends = undefined;
+        this.init = undefined;
     }
     Properties.prototype = Class;
 
