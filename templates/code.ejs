@@ -19,7 +19,7 @@
     (function () { <% /* self-executing function is necessary here because of shitty IE @see http://perfectionkills.com/a-closer-look-at-expression-closures/ */ %>
     Constructor = function <%= $classMap.className %>() {
         var instructions = Constructor["@"],
-            exportProtected,
+            constructAsSuperClass,
             properties,
             overriddenMethods,
             Super,
@@ -37,36 +37,41 @@
                 return;
             }
             Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
-            exportProtected = instructions.exportProtected; <% /* if true, the constructor function exposes all protected class members */ %>
+            constructAsSuperClass = instructions.constructAsSuperClass; <% /* if true, the constructor function exposes all protected class members */ %>
             overriddenMethods = instructions.overriddenMethods;
         }
 
+        <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
+        overriddenMethods = overriddenMethods || {};
+        <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
+        overriddenMethods.<%= methodName %> = overriddenMethods.<%= methodName %> || bind(properties.<%= methodName %>, properties);
+        <% }); %>
+        <% } %>
+
         <% if ($superProperties) { %>
-        Super = function () {
-            properties.Super = Class.Extends.$construct({
-                exportProtected: true,
-                overriddenMethods: overriddenMethods,
-                Instance: Instance
-            }, arguments);
-            return properties.Super;
-        };
+        Super = Class.Extends.$construct({
+            constructAsSuperClass: true,
+            overriddenMethods: overriddenMethods,
+            Instance: Instance
+        }, arguments);
         <% } %>
 
         properties = new Properties(Instance, Super);
         this.Class = Constructor;
+
+        <% /* Exporting all public methods */ %>
+        <%= $generate.publicExports($classMap) %>
+
+        if (constructAsSuperClass) {
+            <% /* Exporting all protected methods */ %>
+            <%= $generate.protectedExports($classMap) %>
+        }
 
         for (key in overriddenMethods) {
             if (overriddenMethods.hasOwnProperty(key)) {
                 properties[key] = overriddenMethods[key];
             }
         }
-
-        <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
-        overriddenMethods = overriddenMethods || {};
-        <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
-        overriddenMethods.<%= methodName %> = bind(properties.<%= methodName %>, properties);
-        <% }); %>
-        <% } %>
 
         <% if ($classMap.hasInit) { %>
         Class.init.apply(properties, arguments);
@@ -80,14 +85,6 @@
         Super = properties.Super;
 
         <% } %>
-
-        <% /* Exporting all public methods */ %>
-        <%= $generate.publicExports($classMap) %>
-
-        if (exportProtected) {
-            <% /* Exporting all protected methods */ %>
-            <%= $generate.protectedExports($classMap) %>
-        }
 
         delete Constructor["@"];
     };
