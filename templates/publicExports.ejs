@@ -14,5 +14,5 @@ this.<%= $nameModifiers.setter(key) %> = <%= $generate.setter(key) %>;
 this.<%= $nameModifiers.getter(key) %> = <%= $generate.getter(key) %>;
 <% }); %>
 <% _($thisProperties.public.method).each(function printPublicMethods(value, key) { %>
-this.<%= key %> = Class.<%= key %>.bind(properties);
+this.<%= key %> = bind(Class.<%= key %>, properties);
 <% }); %>

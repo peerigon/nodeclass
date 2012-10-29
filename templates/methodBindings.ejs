@@ -1,10 +1,10 @@
 <% /* ensures that all functions are bound to the properties-object */ %>
 <% _($thisProperties.private.method).each(function bindPrivateMethods(value, key) { %>
-this.<%= key %> = Class.<%= key %>.bind(this);
+this.<%= key %> = bind(Class.<%= key %>, this);
 <% }); %>
 <% _($thisProperties.protected.method).each(function bindProtectedMethods(value, key) { %>
-this.<%= key %> = Class.<%= key %>.bind(this);
+this.<%= key %> = bind(Class.<%= key %>, this);
 <% }); %>
 <% _($thisProperties.public.method).each(function bindPublicMethods(value, key) { %>
-this.<%= key %> = Class.<%= key %>.bind(this);
+this.<%= key %> = bind(Class.<%= key %>, this);
 <% }); %>

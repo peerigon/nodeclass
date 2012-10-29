@@ -2,6 +2,13 @@
 (function createConstructor(Class) {
     var Constructor;
 
+    <% /* unfortunately non-native binding is faster than native http://jsperf.com/bind-vs-emulate/6 */ %>
+    function bind(fn, context) {
+        return function () {
+            return fn.apply(context, arguments);
+        };
+    }
+
     function Properties(Instance, Super) {
         <%= $generate.methodBindings($classMap) %>
         this.Instance = Instance;
@@ -57,7 +64,7 @@
         <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
         overriddenMethods = overriddenMethods || {};
         <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
-        overriddenMethods.<%= methodName %> = properties.<%= methodName %>.bind(properties);
+        overriddenMethods.<%= methodName %> = bind(properties.<%= methodName %>, properties);
         <% }); %>
         <% } %>
 
