@@ -1,11 +1,17 @@
-<% if ($superProperties) { %>
-    <% _($superProperties.protected.attribute).each(function printProtectedSuperSetterGetter(value, key) { %>
-        <% var setterKey = $nameModifiers.setter(key); %>
-        <% var getterKey = $nameModifiers.getter(key); %>
-this._<%= setterKey %> = Super._<%= setterKey %>;
-this._<%= getterKey %> = Super._<%= getterKey %>;
-    <% }); %>
-    <% _($superProperties.protected.method).each(function printProtectedSuperMethods(value, key) { %>
-this.<%= key %> = Super.<%= key %>;
-    <% }); %>
-<% } %>
+<% _($superProperties.protected.attribute).each(function printProtectedSetterGetter($value, $key) { %>
+    <% if ($thisProperties.protected.attribute[$key] !== undefined) { return; } %>
+
+    <% var $setterKey = $nameModifiers.setter($key); %>
+    <% if ($thisProperties.protected.method[$setterKey] === undefined && $superProperties.protected.method[$setterKey] === undefined) { %>
+this._<%= $setterKey %> = Super._<%= $setterKey %>;
+    <% } %>
+
+    <% var $getterKey = $nameModifiers.getter($key); %>
+    <% if ($thisProperties.protected.method[$getterKey] === undefined && $superProperties.protected.method[$getterKey] === undefined) { %>
+this._<%= $getterKey %> = Super._<%= $getterKey %>;
+    <% } %>
+<% }); %>
+
+<% _($superProperties.protected.method).each(function printProtectedMethods($value, $key) { %>
+this.<%= $key %> = Super.<%= $key %>;
+<% }); %>

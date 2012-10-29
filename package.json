@@ -5,7 +5,16 @@
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
-  "keywords": ["class", "oop", "object-oriented", "inheritance", "private", "protected", "public", "abstract"],
+  "keywords": [
+      "class",
+      "oop",
+      "object-oriented",
+      "inheritance",
+      "private",
+      "protected",
+      "public",
+      "abstract"
+  ],
   "dependencies": {
       "cli-color": "0.x",
       "underscore": "1.x",

@@ -2,13 +2,6 @@
 (function createConstructor(Class) {
     var Constructor;
 
-    <% /* unfortunately non-native binding is faster than native http://jsperf.com/bind-vs-emulate/6 */ %>
-    function bind(fn, context) {
-        return function () {
-            return fn.apply(context, arguments);
-        };
-    }
-
     function Properties(Instance, Super) {
         <%= $generate.methodBindings($classMap) %>
         this.Instance = Instance;
@@ -44,6 +37,7 @@
         <% if ($superProperties) { %>
         Super = function () {
             properties.Super = Class.Extends.$construct({
+                constructAsSuperClass: true,
                 exportProtected: true,
                 overriddenMethods: overriddenMethods,
                 Instance: Instance
@@ -84,16 +78,16 @@
         <% } %>
 
         <% if ($superProperties) { %>
-        <% /* if the init-function hasn't called this.Super() it's called now */ %>
+            <% /* if the init-function hasn't called this.Super() it's called now */ %>
         if (typeof properties.Super === "function") {
             Super.apply(null, arguments);
         };
         Super = properties.Super;
 
-        <% /* Exporting all public super methods */ %>
-        <%= $generate.superPublicExports($classMap) %>
+            <% /* Exporting all public super methods */ %>
+            <%= $generate.superPublicExports($classMap) %>
 
-        <% /* Exporting all protected super methods */ %>
+            <% /* Exporting all protected super methods */ %>
         if (constructAsSuperClass) {
             <%= $generate.superProtectedExports($classMap) %>
         }
@@ -109,7 +103,7 @@
     <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
     Constructor.$construct = function (instructions, args) {
         function <%= $classMap.className %>() {
-            return Constructor.apply(this, args);
+            return Constructor.apply(this, args || []);
         }
         <%= $classMap.className %>.prototype = Constructor.prototype;
 

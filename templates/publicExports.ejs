@@ -1,7 +1,15 @@
-<% _($thisProperties.public.attribute).each(function printPublicSetterGetter(value, key) { %>
-this.<%= $nameModifiers.setter(key) %> = <%= $generate.setter(key) %>;
-this.<%= $nameModifiers.getter(key) %> = <%= $generate.getter(key) %>;
+<% _($thisProperties.public.attribute).each(function printPublicSetterGetter($value, $key) { %>
+    <% var $setterKey = $nameModifiers.setter($key); %>
+    <% if ($thisProperties.public.method[$setterKey] === undefined) { %>
+this.<%= $setterKey %> = <%= $generate.setter($key) %>;
+    <% } %>
+
+    <% var $getterKey = $nameModifiers.getter($key); %>
+    <% if ($thisProperties.public.method[$getterKey] === undefined) { %>
+this.<%= $getterKey %> = <%= $generate.getter($key) %>;
+    <% } %>
 <% }); %>
-<% _($thisProperties.public.method).each(function printPublicMethods(value, key) { %>
-this.<%= key %> = properties.<%= key %>;
+
+<% _($thisProperties.public.method).each(function printPublicMethods($value, $key) { %>
+this.<%= $key %> = properties.<%= $key %>;
 <% }); %>

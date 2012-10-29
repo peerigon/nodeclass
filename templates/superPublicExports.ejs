@@ -1,11 +1,17 @@
-<% if ($superProperties) { %>
-    <% _($superProperties.public.attribute).each(function printPublicSuperSetterGetter(value, key) { %>
-        <% var setterKey = $nameModifiers.setter(key); %>
-        <% var getterKey = $nameModifiers.getter(key); %>
-this.<%= setterKey %> = Super.<%= setterKey %>;
-this.<%= getterKey %> = Super.<%= getterKey %>;
-    <% }); %>
-    <% _($superProperties.public.method).each(function printPublicSuperMethods(value, key) { %>
-this.<%= key %> = Super.<%= key %>;
-    <% }); %>
-<% } %>
+<% _($superProperties.public.attribute).each(function printPublicSetterGetter($value, $key) { %>
+    <% if ($thisProperties.public.attribute[$key] !== undefined) { return; } %>
+
+    <% var $setterKey = $nameModifiers.setter($key); %>
+    <% if ($thisProperties.public.method[$setterKey] === undefined && $superProperties.public.method[$setterKey] === undefined) { %>
+this.<%= $setterKey %> = Super.<%= $setterKey %>;
+    <% } %>
+
+    <% var $getterKey = $nameModifiers.getter($key); %>
+    <% if ($thisProperties.public.method[$getterKey] === undefined && $superProperties.public.method[$getterKey] === undefined) { %>
+this.<%= $getterKey %> = Super.<%= $getterKey %>;
+    <% } %>
+<% }); %>
+
+<% _($superProperties.public.method).each(function printPublicMethods($value, $key) { %>
+this.<%= $key %> = Super.<%= $key %>;
+<% }); %>

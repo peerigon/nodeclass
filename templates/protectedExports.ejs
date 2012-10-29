@@ -1,7 +1,15 @@
-<% _($thisProperties.protected.attribute).each(function printProtectedSetterGetter(value, key) { %>
-this._<%= $nameModifiers.setter(key) %> = <%= $generate.setter(key) %>;
-this._<%= $nameModifiers.getter(key) %> = <%= $generate.getter(key) %>;
+<% _($thisProperties.protected.attribute).each(function printProtectedSetterGetter($value, $key) { %>
+    <% var $setterKey = $nameModifiers.setter($key); %>
+    <% if ($thisProperties.protected.method[$setterKey] === undefined) { %>
+this._<%= $setterKey %> = <%= $generate.setter($key) %>;
+    <% } %>
+
+    <% var $getterKey = $nameModifiers.getter($key); %>
+    <% if ($thisProperties.protected.method[$getterKey] === undefined) { %>
+this._<%= $getterKey %> = <%= $generate.getter($key) %>;
+    <% } %>
 <% }); %>
-<% _($thisProperties.protected.method).each(function printProtectedMethods(value, key) { %>
-this.<%= key %> = properties.<%= key %>;
+
+<% _($thisProperties.protected.method).each(function printProtectedMethods($value, $key) { %>
+this.<%= $key %> = properties.<%= $key %>;
 <% }); %>

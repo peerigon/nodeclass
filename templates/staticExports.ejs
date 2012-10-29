@@ -1,6 +1,6 @@
-<% _($thisProperties.static.attribute).each(function printStaticAttribute(value, key) { %>
-Constructor.<%= $nameModifiers.trimPrefix(key) %> = Class.<%= key %>;
+<% _($thisProperties.static.attribute).each(function printStaticAttribute($value, $key) { %>
+Constructor.<%= $nameModifiers.trimPrefix($key) %> = Class.<%= $key %>;
 <% }); %>
-<% _($thisProperties.static.method).each(function printStaticMethod(value, key) { %>
-Constructor.<%= $nameModifiers.trimPrefix(key) %> = bind(Class.<%= key %>, Constructor);
+<% _($thisProperties.static.method).each(function printStaticMethod($value, $key) { %>
+Constructor.<%= $nameModifiers.trimPrefix($key) %> = Class.<%= $key %>;
 <% }); %>
