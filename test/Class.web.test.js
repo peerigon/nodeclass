@@ -74,6 +74,14 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(c.getBooleanProp()).to.be("hello");
             expect(c.getStringProp()).to.be("hello");
         });
+        it("should not add these getters and setters to the inner object", function () {
+            expect(cThis.setStringProp).to.be(undefined);
+            expect(cThis.getStringProp).to.be(undefined);
+        });
+        it("should hide meta-properties", function () {
+            expect(cThis.init).to.be(undefined);
+            expect(cThis.Extends).to.be(undefined);
+        });
     });
     describe("Methods", function () {
         it("should be bound to the properties-object", function () {
