@@ -1,18 +1,7 @@
-<% if ($superProperties) { %>
-    <% _($superProperties.protected.attribute).each(function printProtectedSuperSetterGetter(value, key) { %>
-        <% var setterKey = $nameModifiers.setter(key) %>
-        <% var getterKey = $nameModifiers.getter(key) %>
-this._<%= setterKey %> = Super._<%= setterKey %>;
-this._<%= getterKey %> = Super._<%= getterKey %>;
-    <% }); %>
-    <% _($superProperties.protected.method).each(function printProtectedSuperMethods(value, key) { %>
-this.<%= key %> = Super.<%= key %>;
-    <% }); %>
-<% } %>
 <% _($thisProperties.protected.attribute).each(function printProtectedSetterGetter(value, key) { %>
 this._<%= $nameModifiers.setter(key) %> = <%= $generate.setter(key) %>;
 this._<%= $nameModifiers.getter(key) %> = <%= $generate.getter(key) %>;
 <% }); %>
 <% _($thisProperties.protected.method).each(function printProtectedMethods(value, key) { %>
-this.<%= key %> = bind(Class.<%= key %>, properties);
+this.<%= key %> = properties.<%= key %>;
 <% }); %>

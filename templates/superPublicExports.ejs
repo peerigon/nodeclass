@@ -1,0 +1,11 @@
+<% if ($superProperties) { %>
+    <% _($superProperties.public.attribute).each(function printPublicSuperSetterGetter(value, key) { %>
+        <% var setterKey = $nameModifiers.setter(key); %>
+        <% var getterKey = $nameModifiers.getter(key); %>
+this.<%= setterKey %> = Super.<%= setterKey %>;
+this.<%= getterKey %> = Super.<%= getterKey %>;
+    <% }); %>
+    <% _($superProperties.public.method).each(function printPublicSuperMethods(value, key) { %>
+this.<%= key %> = Super.<%= key %>;
+    <% }); %>
+<% } %>

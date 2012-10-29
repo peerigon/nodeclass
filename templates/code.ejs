@@ -41,49 +41,62 @@
             overriddenMethods = instructions.overriddenMethods;
         }
 
-        <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
-        overriddenMethods = overriddenMethods || {};
-        <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
-        overriddenMethods.<%= methodName %> = overriddenMethods.<%= methodName %> || bind(properties.<%= methodName %>, properties);
-        <% }); %>
-        <% } %>
-
         <% if ($superProperties) { %>
-        Super = Class.Extends.$construct({
-            constructAsSuperClass: true,
-            overriddenMethods: overriddenMethods,
-            Instance: Instance
-        }, arguments);
+        Super = function () {
+            properties.Super = Class.Extends.$construct({
+                exportProtected: true,
+                overriddenMethods: overriddenMethods,
+                Instance: Instance
+            }, arguments);
+            return properties.Super;
+        };
         <% } %>
 
         properties = new Properties(Instance, Super);
-        this.Class = Constructor;
 
         <% /* Exporting all public methods */ %>
         <%= $generate.publicExports($classMap) %>
+        this.Class = Constructor;
 
+        <% /* Exporting all protected methods */ %>
         if (constructAsSuperClass) {
-            <% /* Exporting all protected methods */ %>
             <%= $generate.protectedExports($classMap) %>
         }
 
+        <% /* Creating overriddenMethods-object */ %>
+        <% if ($superProperties && _($classMap.overriddenMethods).keys().length > 0) { %>
+        overriddenMethods = overriddenMethods || {};
+        <% _($classMap.overriddenMethods).each(function printOverriddenMethods(method, methodName) { %>
+        overriddenMethods.<%= methodName %> = overriddenMethods.<%= methodName %> || properties.<%= methodName %>;
+        <% }); %>
+        <% } %>
+
+        <% /* Overriding methods of properties-object */ %>
         for (key in overriddenMethods) {
             if (overriddenMethods.hasOwnProperty(key)) {
                 properties[key] = overriddenMethods[key];
             }
         }
 
+        <% /* Now we're calling the init-function */ %>
         <% if ($classMap.hasInit) { %>
         Class.init.apply(properties, arguments);
         <% } %>
 
         <% if ($superProperties) { %>
-        <% /* if the init-function hasn't been called this.Super() it's called now */ %>
+        <% /* if the init-function hasn't called this.Super() it's called now */ %>
         if (typeof properties.Super === "function") {
-            properties.Super.apply(null, arguments);
+            Super.apply(null, arguments);
         };
         Super = properties.Super;
 
+        <% /* Exporting all public super methods */ %>
+        <%= $generate.superPublicExports($classMap) %>
+
+        <% /* Exporting all protected super methods */ %>
+        if (constructAsSuperClass) {
+            <%= $generate.superProtectedExports($classMap) %>
+        }
         <% } %>
 
         delete Constructor["@"];

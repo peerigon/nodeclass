@@ -23,7 +23,7 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
             expect(Named.name).to.be("MyClass");
         });
     });
-    describe("Attributes", function () {
+    describe.only("Attributes", function () {
         var c = new C(),
             cThis = c.exposeCThis(),
             bThis = c.exposeBThis();
