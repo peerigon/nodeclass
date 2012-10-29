@@ -15,6 +15,7 @@
     (function () { <% /* self-executing function is necessary here because of shitty IE @see http://perfectionkills.com/a-closer-look-at-expression-closures/ */ %>
     Constructor = function <%= $classMap.className %>() {
         var instructions = Constructor["@"],
+            args = arguments,
             constructAsSuperClass,
             properties,
             overriddenMethods,
@@ -27,24 +28,28 @@
         }
 
         if (instructions) {
+            delete Constructor["@"];
             if (instructions.doNothing) {
                 <% /* doNothing is necessary to make the instanceof operator work */ %>
-                delete Constructor["@"];
                 return;
             }
             Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
             constructAsSuperClass = instructions.constructAsSuperClass; <% /* if true, the constructor function exposes all protected class members */ %>
             overriddenMethods = instructions.overriddenMethods;
+            args = instructions.args || arguments;
         }
 
         <% if ($superProperties) { %>
         Super = function () {
-            properties.Super = Class.Extends.$construct({
+            Class.Extends["@"] = {
                 constructAsSuperClass: true,
                 exportProtected: true,
                 overriddenMethods: overriddenMethods,
+                args: arguments,
                 Instance: Instance
-            }, arguments);
+            };
+
+            properties.Super = new Class.Extends();
             return properties.Super;
         };
         <% } %>
@@ -77,13 +82,13 @@
 
         <% /* Now we're calling the init-function */ %>
         <% if ($classMap.hasInit) { %>
-        Class.init.apply(properties, arguments);
+        Class.init.apply(properties, args);
         <% } %>
 
         <% if ($superProperties) { %>
             <% /* if the init-function hasn't called this.Super() it's called now */ %>
         if (typeof properties.Super === "function") {
-            Super.apply(null, arguments);
+            Super.apply(null, args);
         };
         Super = properties.Super;
 
@@ -95,30 +100,17 @@
             <%= $generate.superProtectedExports($classMap) %>
         }
         <% } %>
-
-        delete Constructor["@"];
     };
     }());
 
     <% /* Attaching static properties */ %>
     <%= $generate.staticExports($classMap) %>
 
-    <% /* this special function is used to call the constructor with an argument-array since you cant use the .apply()-method with the new operator. */ %>
-    Constructor.$construct = function (instructions, args) {
-        function <%= $classMap.className %>() {
-            return Constructor.apply(this, args || []);
-        }
-        <%= $classMap.className %>.prototype = Constructor.prototype;
-
-        Constructor["@"] = instructions;
-
-        return new <%= $classMap.className %>();
-    };
-
     <% if ($superProperties) { %>
-    Constructor.prototype = Class.Extends.$construct({
+    Class.Extends["@"] = {
         doNothing: true
-    });
+    };
+    Constructor.prototype = new Class.Extends();
     <% } %>
 
     Constructor.Extends = Class.Extends;
