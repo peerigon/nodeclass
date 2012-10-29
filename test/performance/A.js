@@ -2,7 +2,23 @@
 
 var util = require("util");
 
-function A() {}
+function A() {
+    var key,
+        value,
+        proto;
+
+    if (A.withBinding) {
+        proto = A.prototype;
+        for (key in proto) {
+            if (proto.hasOwnProperty(key)) {
+                value = proto[key];
+                if (typeof value === "function") {
+                    this[key] = value.bind(this);
+                }
+            }
+        }
+    }
+}
 
 A.prototype.booleanProp = false;
 A.prototype._booleanProp = false;

@@ -8,19 +8,19 @@ var _ = require("underscore"),
     clc = require("cli-color");
 
 var outputDir = __dirname + "/results",
-    numOfIterations = 20000,
+    now = new Date(),
+    title = process.argv[2],
+    numOfIterations = 100000,
     outputFile = outputDir + "/" +
-        new Date()
-        .toUTCString()
-        .replace(/,/g, "")
-        .replace(/:/g, "-")
-        .replace("GMT", " " + numOfIterations) +
+        title + " " + numOfIterations +
         ".json",
     nodeClassPath = "./C.class.js",
     classicPath = "./C.js",
     Class,
     result = {
         setup: {
+            title: title,
+            date: now.toUTCString(),
             numOfIterations: numOfIterations,
             nodeClassPath: nodeClassPath,
             classicPath: classicPath,
@@ -28,7 +28,8 @@ var outputDir = __dirname + "/results",
         },
         tests: {
             nodeclass: {},
-            classic: {}
+            classic: {},
+            classicBinding: {}
         }
     };
 
@@ -72,6 +73,11 @@ function perform(action, arg) {
 
 logger.use("info", "mute");
 
+// PRINT SETUP
+console.log("\nTest: ", title);
+console.log("Number of iterations: " + numOfIterations);
+console.log("\n" + clc.blackBright("-------------------------------------------------------------------------------"));
+
 // NODECLASS
 console.log("\n" + clc.underline("nodeclass"));
 result.tests.nodeclass.compilation = perform(operations.compilation, nodeClassPath);
@@ -82,13 +88,24 @@ result.tests.nodeclass.execution = perform(operations.execution, new Class());
 // CLASSIC
 console.log("\n" + clc.underline("classic"));
 result.tests.classic.compilation = perform(operations.compilation, classicPath);
+Class.withBinding = false;
 Class = require(classicPath);
 result.tests.classic.instantiation = perform(operations.instantiation, Class);
 result.tests.classic.execution = perform(operations.execution, new Class());
 
-// PRINT SETUP
+// CLASSIC (BINDING)
+console.log("\n" + clc.underline("classic (binding)"));
+result.tests.classicBinding.compilation = perform(operations.compilation, classicPath);
+Class = require(classicPath);
+Class.withBinding = true;
+result.tests.classicBinding.instantiation = perform(operations.instantiation, Class);
+result.tests.classicBinding.execution = perform(operations.execution, new Class());
+
 console.log("\n" + clc.blackBright("-------------------------------------------------------------------------------"));
-console.log("\nnumber of iterations: " + numOfIterations);
+
+if (!title) {
+    return; // no output without title
+}
 
 // OUTPUT
 if (fs.existsSync(outputDir) === false) {

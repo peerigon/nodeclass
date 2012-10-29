@@ -3,7 +3,25 @@
 var util = require("util"),
     B = require("./B.js");
 
-function C() {}
+function C() {
+    var key,
+        value,
+        proto;
+
+    B.withBinding = C.withBinding;
+    B.call(this);
+    if (C.withBinding) {
+        proto = C.prototype;
+        for (key in proto) {
+            if (proto.hasOwnProperty(key)) {
+                value = proto[key];
+                if (typeof value === "function") {
+                    this[key] = value.bind(this);
+                }
+            }
+        }
+    }
+}
 util.inherits(C, B);
 
 C.prototype.booleanProp = false;
