@@ -1,25 +1,26 @@
 {
   "name": "nodeclass",
-  "description": "JavaScript-classes for node",
-  "version": "0.3.0",
+  "description": "Smart classes for node.js",
+  "version": "0.4.0",
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",
   "keywords": [
       "class",
+      "classical",
       "oop",
       "object-oriented",
       "inheritance",
+      "inherit",
+      "extend",
+      "prototype",
       "private",
       "protected",
-      "public",
-      "abstract"
+      "public"
   ],
   "dependencies": {
       "cli-color": "0.x",
-      "underscore": "1.x",
-      "fshelpers": "git://github.com/peerigon/fshelpers.git",
-      "metaclass": "git://github.com/peerigon/metaclass.git"
+      "underscore": "1.x"
   },
   "devDependencies": {
       "mocha": "1.x",
