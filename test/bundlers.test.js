@@ -1,8 +1,6 @@
 "use strict"; // run code in ES5 strict mode
 
 var webpack = require("webpack"),
-    fs = require("fs"),
-    pathUtil = require("path"),
     nodeclass = require("../lib/index.js"),
     context = require("path").resolve(__dirname, "../../");
 
@@ -14,7 +12,7 @@ describe("bundlers", function () {
             webpack(entryFilename, {
                 context: context,
                 output: __dirname + "/bundlers/webpack/bundle.js",
-                //debug: true,
+                debug: true,
                 includeFilenames: true,
                 preLoaders: [
                     nodeclass.bundlers.webpack
