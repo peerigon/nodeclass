@@ -8,7 +8,10 @@ var C = require("./Class/C.class.js"),
     B = require("./Class/B.class.js"),
     A = require("./Class/A.class.js"),
     D = require("./Class/D.class.js"),
-    E = require("./Class/E.class.js");
+    E = require("./Class/E.class.js"),
+    F = require("./Class/F.class.js"),
+    G = require("./Class/G.class.js"),
+    H = require("./Class/H.class.js");
 
 describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function () {
     describe("Naming", function () {
@@ -112,20 +115,21 @@ describe("Class " + (typeof window === "undefined"? "(node)": "(web)"), function
     describe("Inheritance", function () {
         var c,
             d,
+            f,
             dThis,
             cThis,
             bThis,
             aThis;
 
         it("should execute the init-function in the right order", function () {
-            A.initCallOrder = [];
-            c = new C();
-            expect(A.initCallOrder).to.eql(["C", "B", "A"]);
+            H.initCallOrder = [];
+            f = new F();
+            expect(H.initCallOrder).to.eql(["F", "G", "H"]);
         });
         it("should pass the init-arguments up the inheritance chain", function () {
-            A.initArguments = [];
-            c = new C(1, 2, 3);
-            expect(A.initArguments).to.eql([[1, 2, 3], [1, 2, 3], []]);
+            H.initArguments = [];
+            f = new F(1, 2, 3);
+            expect(H.initArguments).to.eql([[1, 2, 3], [1, 2, 3], []]);
         });
         it("should be possible to omit the init-function", function () {
             d = new D();

@@ -1,7 +1,7 @@
 {
   "name": "nodeclass",
   "description": "Smart classes for node.js",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "homepage": "http://github.com/peerigon/nodeclass",
   "repository": "git://github.com/peerigon/nodeclass.git",
   "main": "./lib/index.js",

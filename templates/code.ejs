@@ -21,6 +21,7 @@
             overriddenMethods,
             Super,
             Instance = this,
+            childProperties,
             key;
 
         if (this === undefined) {
@@ -36,6 +37,7 @@
             Instance = instructions.Instance || this; <% /* provides the reference to the first child class that can be obtained via this.Instance */ %>
             constructAsSuperClass = instructions.constructAsSuperClass; <% /* if true, the constructor function exposes all protected class members */ %>
             overriddenMethods = instructions.overriddenMethods;
+            childProperties = instructions.childProperties;
             args = instructions.args || arguments;
         }
 
@@ -45,14 +47,18 @@
                 constructAsSuperClass: true,
                 exportProtected: true,
                 overriddenMethods: overriddenMethods,
+                childProperties: properties,
                 args: arguments,
                 Instance: Instance
             };
 
-            properties.Super = new Class.Extends();
-            return properties.Super;
+            return new Class.Extends();
         };
         <% } %>
+        if (childProperties) {
+            childProperties.Super = this;
+            childProperties = null; <% /* we don't need it anymore */ %>
+        }
 
         properties = new Properties(Instance, Super);
 
@@ -100,6 +106,8 @@
             <%= $generate.superProtectedExports($classMap) %>
         }
         <% } %>
+
+        instructions = args = constructAsSuperClass = Super = childProperties = key = overriddenMethods = undefined; <% /* we don't need it anymore, so we're removing them from the scope of the setters / getters */ %>
     };
     }());
 

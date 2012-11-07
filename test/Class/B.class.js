@@ -22,17 +22,6 @@ var B = new Class("B", {
     __numberProp: 2,
     __stringProp: "b",
     myStringB: "",
-    init: function () {
-        var C = require("./C.class.js");
-
-        A.initCallOrder.push("B");
-        A.initArguments.push(Array.prototype.slice.call(arguments));
-        expect(this.Instance).to.be.a(C);
-        expect(this.Instance.Class).to.be(C);
-        expect(this.Super).to.be.a("function");
-        this.Super(); // calling super with no arguments
-        expect(this.Super).to.be.an(A);
-    },
     getClassNames: function () {
         return "B " + this.Super.getClassNames();
     },

@@ -29,11 +29,7 @@ var C = new Class("C", {
     __stringProp: "c",
     greeting: "",
     init: function () {
-        A.initCallOrder.push("C");
-        A.initArguments.push(Array.prototype.slice.call(arguments));
-        expect(this.Instance).to.be.a(C);
-        expect(this.Instance.Class).to.be(C);
-        expect(this.Super).to.be.a("function");
+        // empty init function shouldn't be a problem
     },
     getClassNames: function () {
         return "C " + this.Super.getClassNames();
