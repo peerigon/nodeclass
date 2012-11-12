@@ -24,7 +24,7 @@ var outputDir = __dirname + "/results",
             numOfIterations: numOfIterations,
             nodeClassPath: nodeClassPath,
             classicPath: classicPath,
-            unit: "milliseconds"
+            unit: "nanoseconds"
         },
         tests: {
             nodeclass: {},
@@ -55,7 +55,7 @@ function perform(action, arg) {
 
     process.stdout.write(clc.blackBright(action.name + clc.move(20 - action.name.length, 0) + " ["));
 
-    start = new Date().getTime();
+    start = process.hrtime();
     for (i = 0; i < numOfIterations; i++) {
         action(arg);
         progress = Math.floor((i / numOfIterations) * 50);
@@ -64,11 +64,12 @@ function perform(action, arg) {
         }
         previousProgress = progress;
     }
-    duration = new Date().getTime() - start;
+    duration = process.hrtime(start);
 
-    process.stdout.write(clc.blackBright("] ") + clc.greenBright(duration + "ms") + "\n");
+    process.stdout.write(clc.blackBright("] ") +
+        clc.greenBright(Math.floor(duration[1]/numOfIterations) + " ns/op") + "\n");
 
-    return duration;
+    return duration[1];
 }
 
 logger.use("info", "mute");
